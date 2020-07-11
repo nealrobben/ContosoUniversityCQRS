@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>ContosoUniversityCQRS.Domain</AssemblyName>
+    <RootNamespace>ContosoUniversityCQRS.Domain</RootNamespace>
+  </PropertyGroup>
+
+</Project>

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ContosoUniversityCQRS.Migrations
+namespace ContosoUniversityCQRS.WebUI.Migrations
 {
     public partial class MaxLengthOnNames : Migration
     {

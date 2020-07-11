@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ContosoUniversityCQRS.Data;
-using ContosoUniversityCQRS.Models;
+using ContosoUniversityCQRS.WebUI.Data;
+using ContosoUniversityCQRS.WebUI.Models;
 
-namespace ContosoUniversityCQRS.Controllers
+namespace ContosoUniversityCQRS.WebUI.Controllers
 {
     public class CoursesController : Controller
     {

@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ContosoUniversityCQRS.Models;
-using ContosoUniversityCQRS.Data;
+using ContosoUniversityCQRS.WebUI.Models;
+using ContosoUniversityCQRS.WebUI.Data;
 using System.Threading.Tasks;
 using System.Linq;
-using ContosoUniversityCQRS.Models.SchoolViewModels;
+using ContosoUniversityCQRS.WebUI.Models.SchoolViewModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace ContosoUniversityCQRS.Controllers
+namespace ContosoUniversityCQRS.WebUI.Controllers
 {
     public class HomeController : Controller
     {

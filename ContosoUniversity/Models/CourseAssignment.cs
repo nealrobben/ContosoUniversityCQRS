@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversityCQRS.Models
+﻿namespace ContosoUniversityCQRS.WebUI.Models
 {
     public class CourseAssignment
     {

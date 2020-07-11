@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ContosoUniversityCQRS.Models.SchoolViewModels
+namespace ContosoUniversityCQRS.WebUI.Models.SchoolViewModels
 {
     public class InstructorIndexData
     {

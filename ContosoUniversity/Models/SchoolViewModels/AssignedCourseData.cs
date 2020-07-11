@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ContosoUniversityCQRS.Models.SchoolViewModels
+namespace ContosoUniversityCQRS.WebUI.Models.SchoolViewModels
 {
     public class AssignedCourseData
     {

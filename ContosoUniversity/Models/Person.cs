@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ContosoUniversityCQRS.Models
+namespace ContosoUniversityCQRS.WebUI.Models
 {
     public abstract class Person
     {

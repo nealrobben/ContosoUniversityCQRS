@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ContosoUniversityCQRS.Data;
-using ContosoUniversityCQRS.Models;
+using ContosoUniversityCQRS.WebUI.Data;
+using ContosoUniversityCQRS.WebUI.Models;
 using System;
 
-namespace ContosoUniversityCQRS.Controllers
+namespace ContosoUniversityCQRS.WebUI.Controllers
 {
     public class StudentsController : Controller
     {

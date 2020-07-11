@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ContosoUniversityCQRS.Models
+namespace ContosoUniversityCQRS.WebUI.Models
 {
     public class Student : Person
     {

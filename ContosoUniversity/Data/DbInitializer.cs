@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using ContosoUniversityCQRS.Models;
+using ContosoUniversityCQRS.WebUI.Models;
 
-namespace ContosoUniversityCQRS.Data
+namespace ContosoUniversityCQRS.WebUI.Data
 {
     public static class DbInitializer
     {

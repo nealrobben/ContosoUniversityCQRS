@@ -1,7 +1,7 @@
-﻿using ContosoUniversityCQRS.Models;
+﻿using ContosoUniversityCQRS.WebUI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ContosoUniversityCQRS.Data
+namespace ContosoUniversityCQRS.WebUI.Data
 {
     public class SchoolContext : DbContext
     {

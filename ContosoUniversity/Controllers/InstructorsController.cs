@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ContosoUniversityCQRS.Data;
-using ContosoUniversityCQRS.Models;
-using ContosoUniversityCQRS.Models.SchoolViewModels;
+using ContosoUniversityCQRS.WebUI.Data;
+using ContosoUniversityCQRS.WebUI.Models;
+using ContosoUniversityCQRS.WebUI.Models.SchoolViewModels;
 using System.Collections.Generic;
 using System;
 
-namespace ContosoUniversityCQRS.Controllers
+namespace ContosoUniversityCQRS.WebUI.Controllers
 {
     public class InstructorsController : Controller
     {

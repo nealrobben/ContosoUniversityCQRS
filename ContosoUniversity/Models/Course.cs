@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ContosoUniversityCQRS.Models
+namespace ContosoUniversityCQRS.WebUI.Models
 {
     public class Course
     {
