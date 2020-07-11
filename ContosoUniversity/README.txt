@@ -1,1 +1,0 @@
-﻿This is a conversion of the code for the Contoso University tutorial at https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/intro?view=aspnetcore-3.1 to an architecture using Clean Architecture & CQRS
