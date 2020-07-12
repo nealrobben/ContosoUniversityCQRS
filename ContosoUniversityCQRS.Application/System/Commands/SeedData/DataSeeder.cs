@@ -18,8 +18,6 @@ namespace ContosoUniversityCQRS.Application.System.Commands.SeedData
 
         public async Task Seed()
         {
-            //context.Database.EnsureCreated();
-
             // Look for any students.
             if (_context.Students.Any())
             {

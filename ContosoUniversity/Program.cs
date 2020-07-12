@@ -1,15 +1,18 @@
+using ContosoUniversityCQRS.Application.System.Commands.SeedData;
 using ContosoUniversityCQRS.WebUI.Data;
+using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading;
 
 namespace ContosoUniversityCQRS.WebUI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async System.Threading.Tasks.Task Main(string[] args)
         {
             IHost host = CreateHostBuilder(args).Build();
 
@@ -18,8 +21,12 @@ namespace ContosoUniversityCQRS.WebUI
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<SchoolContext>();
-                    DbInitializer.Initialize(context);
+                    var context = services.GetRequiredService<ContosoUniversityCQRS.Persistence.SchoolContext>();
+
+                    context.Database.EnsureCreated();
+
+                    var mediator = services.GetRequiredService<IMediator>();
+                    await mediator.Send(new SeedDataCommand(), CancellationToken.None);
                 }
                 catch (Exception ex)
                 {
