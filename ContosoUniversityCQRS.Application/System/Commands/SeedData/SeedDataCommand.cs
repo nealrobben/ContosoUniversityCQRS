@@ -21,7 +21,7 @@ namespace ContosoUniversityCQRS.Application.System.Commands.SeedData
         public async Task<Unit> Handle(SeedDataCommand request, CancellationToken cancellationToken)
         {
             var seeder = new DataSeeder(_schoolContext);
-            seeder.Seed();
+            await seeder.Seed();
 
             return Unit.Value;
         }
