@@ -1,7 +1,6 @@
 ﻿using ContosoUniversityCQRS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace ContosoUniversityCQRS.Persistence.Configurations
 {
@@ -9,6 +8,8 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
+            builder.ToTable("Department");
+
             builder.HasIndex(e => e.InstructorID);
 
             builder.Property(e => e.DepartmentID).HasColumnName("DepartmentID");

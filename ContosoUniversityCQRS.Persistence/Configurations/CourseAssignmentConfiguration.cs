@@ -8,6 +8,8 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<CourseAssignment> builder)
         {
+            builder.ToTable("CourseAssignment");
+
             builder.HasKey(e => new { e.CourseID, e.InstructorID });
 
             builder.HasIndex(e => e.InstructorID);

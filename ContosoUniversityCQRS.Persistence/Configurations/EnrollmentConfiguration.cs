@@ -9,6 +9,8 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Enrollment> builder)
         {
+            builder.ToTable("Enrollment");
+
             builder.HasIndex(e => e.CourseID);
 
             builder.HasIndex(e => e.StudentID);

@@ -8,6 +8,8 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<OfficeAssignment> builder)
         {
+            builder.ToTable("OfficeAssignment");
+
             builder.HasKey(e => e.InstructorID);
 
             builder.Property(e => e.InstructorID)
