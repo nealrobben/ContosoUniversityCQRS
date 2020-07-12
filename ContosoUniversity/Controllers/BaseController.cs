@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
-    public class BaseController : Controller
+    public abstract class BaseController : Controller
     {
         protected readonly SchoolContext _context;
 
