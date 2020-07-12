@@ -1,3 +1,5 @@
+using ContosoUniversityCQRS.Application;
+using ContosoUniversityCQRS.Persistence;
 using ContosoUniversityCQRS.WebUI.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +24,10 @@ namespace ContosoUniversityCQRS.WebUI
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<SchoolContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<Data.SchoolContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddPersistence(Configuration);
+            services.AddApplication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

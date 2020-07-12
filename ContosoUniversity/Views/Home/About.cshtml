@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ContosoUniversityCQRS.WebUI.Models.SchoolViewModels.EnrollmentDateGroup>
+﻿@model ContosoUniversityCQRS.Application.Home.Queries.GetAboutInfo.AboutInfoVM
 
 @{
     ViewData["Title"] = "Student Body Statistics";
@@ -16,7 +16,7 @@
         </th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.Items)
     {
         <tr>
             <td>

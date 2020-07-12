@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.WebUI.Data;
 using System.Threading.Tasks;
-using System.Linq;
-using ContosoUniversityCQRS.WebUI.Models.SchoolViewModels;
-using Microsoft.EntityFrameworkCore;
+using ContosoUniversityCQRS.Application.Home.Queries.GetAboutInfo;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -13,7 +11,6 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
     {
         public HomeController( SchoolContext context) : base(context)
         {
-
         }
 
         public IActionResult Index()
@@ -23,15 +20,8 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         public async Task<ActionResult> About()
         {
-            IQueryable<EnrollmentDateGroup> data =
-                from student in _context.Students
-                group student by student.EnrollmentDate into dateGroup
-                select new EnrollmentDateGroup()
-                {
-                    EnrollmentDate = dateGroup.Key,
-                    StudentCount = dateGroup.Count()
-                };
-            return View(await data.AsNoTracking().ToListAsync());
+            var result = await Mediator.Send(new GetAboutInfoQuery());
+            return View(result);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

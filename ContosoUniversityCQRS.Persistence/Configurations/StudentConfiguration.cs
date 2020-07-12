@@ -8,6 +8,8 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Student> builder)
         {
+            builder.ToTable("Student");
+
             builder.Property(e => e.ID).HasColumnName("ID");
 
             builder.Property(e => e.FirstMidName)
