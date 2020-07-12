@@ -1,6 +1,8 @@
 ﻿using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ContosoUniversityCQRS.Persistence
 {
@@ -21,8 +23,12 @@ namespace ContosoUniversityCQRS.Persistence
 
         public override int SaveChanges()
         {
-            base.SaveChanges();
-            return 0;
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }

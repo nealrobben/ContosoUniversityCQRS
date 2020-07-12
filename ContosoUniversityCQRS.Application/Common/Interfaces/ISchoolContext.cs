@@ -1,5 +1,7 @@
 ﻿using ContosoUniversityCQRS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ContosoUniversityCQRS.Application.Common.Interfaces
 {
@@ -14,5 +16,6 @@ namespace ContosoUniversityCQRS.Application.Common.Interfaces
         public DbSet<CourseAssignment> CourseAssignments { get; set; }
 
         int SaveChanges();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
