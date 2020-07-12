@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ContosoUniversityCQRS.Domain.Entities
+﻿namespace ContosoUniversityCQRS.Domain.Entities
 {
     public class CourseAssignment
     {

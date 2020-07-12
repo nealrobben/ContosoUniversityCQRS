@@ -18,5 +18,11 @@ namespace ContosoUniversityCQRS.Persistence
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SchoolContext).Assembly);
         }
+
+        public override int SaveChanges()
+        {
+            base.SaveChanges();
+            return 0;
+        }
     }
 }
