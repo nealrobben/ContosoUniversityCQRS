@@ -3,7 +3,7 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ContosoUniversityCQRS.Application.System.Commands
+namespace ContosoUniversityCQRS.Application.System.Commands.SeedData
 {
     public class SeedDataCommand : IRequest
     {
@@ -11,7 +11,7 @@ namespace ContosoUniversityCQRS.Application.System.Commands
 
     public class SeedDataCommandHandler : IRequestHandler<SeedDataCommand>
     {
-        ISchoolContext _schoolContext;
+        private readonly ISchoolContext _schoolContext;
 
         public SeedDataCommandHandler(ISchoolContext schoolContext)
         {
@@ -20,7 +20,8 @@ namespace ContosoUniversityCQRS.Application.System.Commands
 
         public async Task<Unit> Handle(SeedDataCommand request, CancellationToken cancellationToken)
         {
-
+            var seeder = new DataSeeder(_schoolContext);
+            seeder.Seed();
 
             return Unit.Value;
         }

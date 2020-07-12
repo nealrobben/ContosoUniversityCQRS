@@ -3,17 +3,25 @@ using ContosoUniversityCQRS.Domain.Entities;
 using ContosoUniversityCQRS.Domain.Enums;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace ContosoUniversityCQRS.Application.System.Commands
+namespace ContosoUniversityCQRS.Application.System.Commands.SeedData
 {
-    public static class DbInitializer
+    public class DataSeeder
     {
-        public static void Initialize(ISchoolContext context)
+        ISchoolContext _context;
+
+        public DataSeeder(ISchoolContext context)
+        {
+            _context = context;
+        }
+
+        public async Task Seed()
         {
             //context.Database.EnsureCreated();
 
             // Look for any students.
-            if (context.Students.Any())
+            if (_context.Students.Any())
             {
                 return;   // DB has been seeded
             }
@@ -40,9 +48,9 @@ namespace ContosoUniversityCQRS.Application.System.Commands
 
             foreach (Student s in students)
             {
-                context.Students.Add(s);
+                _context.Students.Add(s);
             }
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var instructors = new Instructor[]
             {
@@ -60,9 +68,9 @@ namespace ContosoUniversityCQRS.Application.System.Commands
 
             foreach (Instructor i in instructors)
             {
-                context.Instructors.Add(i);
+                _context.Instructors.Add(i);
             }
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var departments = new Department[]
             {
@@ -82,9 +90,9 @@ namespace ContosoUniversityCQRS.Application.System.Commands
 
             foreach (Department d in departments)
             {
-                context.Departments.Add(d);
+                _context.Departments.Add(d);
             }
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var courses = new Course[]
             {
@@ -113,9 +121,9 @@ namespace ContosoUniversityCQRS.Application.System.Commands
 
             foreach (Course c in courses)
             {
-                context.Courses.Add(c);
+                _context.Courses.Add(c);
             }
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var officeAssignments = new OfficeAssignment[]
             {
@@ -132,9 +140,9 @@ namespace ContosoUniversityCQRS.Application.System.Commands
 
             foreach (OfficeAssignment o in officeAssignments)
             {
-                context.OfficeAssignments.Add(o);
+                _context.OfficeAssignments.Add(o);
             }
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var courseInstructors = new CourseAssignment[]
             {
@@ -174,9 +182,9 @@ namespace ContosoUniversityCQRS.Application.System.Commands
 
             foreach (CourseAssignment ci in courseInstructors)
             {
-                context.CourseAssignments.Add(ci);
+                _context.CourseAssignments.Add(ci);
             }
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var enrollments = new Enrollment[]
             {
@@ -238,16 +246,16 @@ namespace ContosoUniversityCQRS.Application.System.Commands
 
             foreach (Enrollment e in enrollments)
             {
-                var enrollmentInDataBase = context.Enrollments.Where(
+                var enrollmentInDataBase = _context.Enrollments.Where(
                     s =>
                             s.Student.ID == e.StudentID &&
                             s.Course.CourseID == e.CourseID).SingleOrDefault();
                 if (enrollmentInDataBase == null)
                 {
-                    context.Enrollments.Add(e);
+                    _context.Enrollments.Add(e);
                 }
             }
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
