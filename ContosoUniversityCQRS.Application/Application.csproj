@@ -10,4 +10,15 @@
     <ProjectReference Include="..\ContosoUniversityCQRS.Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Courses\Commands\" />
+    <Folder Include="Courses\Queries\" />
+    <Folder Include="Departments\Commands\" />
+    <Folder Include="Departments\Queries\" />
+    <Folder Include="Instructors\Commands\" />
+    <Folder Include="Instructors\Queries\" />
+    <Folder Include="Students\Commands\" />
+    <Folder Include="Students\Queries\" />
+  </ItemGroup>
+
 </Project>
