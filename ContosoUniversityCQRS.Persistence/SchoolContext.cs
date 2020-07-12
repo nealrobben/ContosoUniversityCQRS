@@ -1,8 +1,22 @@
 ﻿using ContosoUniversityCQRS.Application.Common.Interfaces;
+using ContosoUniversityCQRS.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContosoUniversityCQRS.Persistence
 {
-    public class SchoolContext : ISchoolContext
+    public class SchoolContext : DbContext, ISchoolContext
     {
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Instructor> Instructors { get; set; }
+        public DbSet<OfficeAssignment> OfficeAssignments { get; set; }
+        public DbSet<CourseAssignment> CourseAssignments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(SchoolContext).Assembly);
+        }
     }
 }
