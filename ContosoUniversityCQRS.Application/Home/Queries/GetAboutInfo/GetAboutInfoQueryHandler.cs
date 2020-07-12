@@ -1,6 +1,5 @@
 ﻿using ContosoUniversityCQRS.Application.Common.Interfaces;
 using MediatR;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
@@ -28,8 +27,6 @@ namespace ContosoUniversityCQRS.Application.Home.Queries.GetAboutInfo
                        };
 
             return new AboutInfoVM(await data.AsNoTracking().ToListAsync());
-
-            throw new NotImplementedException();
         }
     }
 }

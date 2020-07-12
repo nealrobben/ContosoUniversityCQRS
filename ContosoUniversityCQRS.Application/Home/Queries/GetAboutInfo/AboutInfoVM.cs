@@ -7,10 +7,9 @@ namespace ContosoUniversityCQRS.Application.Home.Queries.GetAboutInfo
     {
         public List<EnrollmentDateGroup> Items { get; }
 
-        public AboutInfoVM(List<EnrollmentDateGroup> data)
+        public AboutInfoVM(List<EnrollmentDateGroup> items)
         {
-            Items = new List<EnrollmentDateGroup>();
-            Items.AddRange(data);
+            Items = items;
         }
     }
 }

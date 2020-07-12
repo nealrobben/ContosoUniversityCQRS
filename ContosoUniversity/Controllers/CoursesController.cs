@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversityCQRS.WebUI.Data;
 using ContosoUniversityCQRS.WebUI.Models;
+using ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -15,14 +16,10 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         }
 
-        // GET: Courses
         public async Task<IActionResult> Index()
         {
-            var courses = _context.Courses
-                .Include(c => c.Department)
-                .AsNoTracking();
-
-            return View(await courses.ToListAsync());
+            var result = await Mediator.Send(new GetCoursesOverviewQuery());
+            return View(result);
         }
 
         // GET: Courses/Details/5

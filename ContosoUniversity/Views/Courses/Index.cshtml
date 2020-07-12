@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ContosoUniversityCQRS.WebUI.Models.Course>
+﻿@model ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview.CoursesOverviewVM
 
 @{
     ViewData["Title"] = "Courses";
@@ -13,22 +13,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CourseID)
+                @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().CourseID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Credits)
+                @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().Credits)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Department)
+                @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().DepartmentName)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Courses)
         {
             <tr>
                 <td>
@@ -41,7 +41,7 @@
                     @Html.DisplayFor(modelItem => item.Credits)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Department.Name)
+                    @Html.DisplayFor(modelItem => item.DepartmentName)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.CourseID">Edit</a> |
