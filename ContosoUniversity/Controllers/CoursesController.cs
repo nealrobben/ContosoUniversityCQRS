@@ -8,13 +8,11 @@ using ContosoUniversityCQRS.WebUI.Models;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
-    public class CoursesController : Controller
+    public class CoursesController : BaseController
     {
-        private readonly SchoolContext _context;
-
-        public CoursesController(SchoolContext context)
+        public CoursesController(SchoolContext context) : base(context)
         {
-            _context = context;
+
         }
 
         // GET: Courses

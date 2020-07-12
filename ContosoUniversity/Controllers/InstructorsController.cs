@@ -10,13 +10,11 @@ using System;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
-    public class InstructorsController : Controller
+    public class InstructorsController : BaseController
     {
-        private readonly SchoolContext _context;
-
-        public InstructorsController(SchoolContext context)
+        public InstructorsController(SchoolContext context) : base(context)
         {
-            _context = context;
+
         }
 
         public async Task<IActionResult> Index(int? id, int? courseID)

@@ -8,13 +8,11 @@ using ContosoUniversityCQRS.WebUI.Models;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
-    public class DepartmentsController : Controller
+    public class DepartmentsController : BaseController
     {
-        private readonly SchoolContext _context;
-
-        public DepartmentsController(SchoolContext context)
+        public DepartmentsController(SchoolContext context) : base(context)
         {
-            _context = context;
+
         }
 
         // GET: Departments

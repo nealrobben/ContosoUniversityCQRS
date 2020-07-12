@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.WebUI.Data;
 using System.Threading.Tasks;
@@ -10,15 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly SchoolContext _context;
-
-        public HomeController(ILogger<HomeController> logger, SchoolContext context)
+        public HomeController( SchoolContext context) : base(context)
         {
-            _logger = logger;
-            _context = context;
+
         }
 
         public IActionResult Index()
