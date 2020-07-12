@@ -5,6 +5,6 @@
         public int InstructorID { get; set; }
         public string Location { get; set; }
 
-        public Instructor Instructors { get; set; }
+        public Instructor Instructor { get; set; }
     }
 }

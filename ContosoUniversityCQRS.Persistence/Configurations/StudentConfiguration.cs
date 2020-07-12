@@ -1,7 +1,6 @@
 ﻿using ContosoUniversityCQRS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace ContosoUniversityCQRS.Persistence.Configurations
 {
@@ -9,7 +8,15 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Student> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(e => e.ID).HasColumnName("ID");
+
+            builder.Property(e => e.FirstName)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            builder.Property(e => e.LastName)
+                .IsRequired()
+                .HasMaxLength(50);
         }
     }
 }

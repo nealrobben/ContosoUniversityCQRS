@@ -9,7 +9,23 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Enrollment> builder)
         {
-            throw new NotImplementedException();
+            builder.HasIndex(e => e.CourseID);
+
+            builder.HasIndex(e => e.StudentID);
+
+            builder.Property(e => e.EnrollmentID).HasColumnName("EnrollmentID");
+
+            builder.Property(e => e.CourseID).HasColumnName("CourseID");
+
+            builder.Property(e => e.StudentID).HasColumnName("StudentID");
+
+            builder.HasOne(d => d.Course)
+                .WithMany(p => p.Enrollments)
+                .HasForeignKey(d => d.CourseID);
+
+            builder.HasOne(d => d.Student)
+                .WithMany(p => p.Enrollments)
+                .HasForeignKey(d => d.StudentID);
         }
     }
 }

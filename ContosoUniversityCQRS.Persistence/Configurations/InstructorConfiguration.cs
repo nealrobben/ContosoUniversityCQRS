@@ -8,7 +8,15 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Instructor> builder)
         {
-            throw new System.NotImplementedException();
+            builder.Property(e => e.ID).HasColumnName("ID");
+
+            builder.Property(e => e.FirstName)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            builder.Property(e => e.LastName)
+                .IsRequired()
+                .HasMaxLength(50);
         }
     }
 }
