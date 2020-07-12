@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ContosoUniversityCQRS.Domain.Entities
+﻿namespace ContosoUniversityCQRS.Domain.Entities
 {
     public class OfficeAssignment
     {
+        public int InstructorID { get; set; }
+        public string Location { get; set; }
+
+        public Instructor Instructors { get; set; }
     }
 }
