@@ -10,7 +10,8 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
         {
             builder.Property(e => e.ID).HasColumnName("ID");
 
-            builder.Property(e => e.FirstName)
+            builder.Property(e => e.FirstMidName)
+                .HasColumnName("FirstName")
                 .IsRequired()
                 .HasMaxLength(50);
 
