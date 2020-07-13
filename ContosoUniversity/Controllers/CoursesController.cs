@@ -26,18 +26,15 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var course = await _context.Courses
                 .Include(c => c.Department)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.CourseID == id);
+
             if (course == null)
-            {
                 return NotFound();
-            }
 
             return View(course);
         }
@@ -58,25 +55,26 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             PopulateDepartmentsDropDownList(course.DepartmentID);
+
             return View(course);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var course = await _context.Courses
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.CourseID == id);
+
             if (course == null)
-            {
                 return NotFound();
-            }
+
             PopulateDepartmentsDropDownList(course.DepartmentID);
+
             return View(course);
         }
 
@@ -85,9 +83,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         public async Task<IActionResult> EditPost(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var courseToUpdate = await _context.Courses
                 .FirstOrDefaultAsync(c => c.CourseID == id);
@@ -109,7 +105,9 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             PopulateDepartmentsDropDownList(courseToUpdate.DepartmentID);
+
             return View(courseToUpdate);
         }
 
@@ -118,6 +116,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             var departmentsQuery = from d in _context.Departments
                                    orderby d.Name
                                    select d;
+
             ViewBag.DepartmentID = new SelectList(departmentsQuery.AsNoTracking(), "DepartmentID", "Name", selectedDepartment);
         }
 
@@ -125,18 +124,15 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var course = await _context.Courses
                 .Include(c => c.Department)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.CourseID == id);
+
             if (course == null)
-            {
                 return NotFound();
-            }
 
             return View(course);
         }
@@ -150,11 +146,6 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CourseExists(int id)
-        {
-            return _context.Courses.Any(e => e.CourseID == id);
         }
     }
 }

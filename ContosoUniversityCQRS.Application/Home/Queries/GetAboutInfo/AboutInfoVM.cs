@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ContosoUniversityCQRS.Application.Home.Queries.GetAboutInfo
 {
