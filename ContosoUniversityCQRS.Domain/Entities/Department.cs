@@ -17,7 +17,7 @@ namespace ContosoUniversityCQRS.Domain.Entities
         public int? InstructorID { get; set; }
         public byte[] RowVersion { get; set; }
 
-        public Instructor Instructor { get; set; }
+        public Instructor Administrator { get; set; }
         public ICollection<Course> Courses { get; set; }
     }
 }

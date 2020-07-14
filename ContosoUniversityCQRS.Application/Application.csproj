@@ -17,7 +17,6 @@
     <Folder Include="Departments\Commands\CreateDepartment\" />
     <Folder Include="Departments\Commands\DeleteDepartment\" />
     <Folder Include="Departments\Commands\UpdateDepartment\" />
-    <Folder Include="Departments\Queries\" />
     <Folder Include="Instructors\Commands\CreateInstructor\" />
     <Folder Include="Instructors\Commands\DeleteInstructor\" />
     <Folder Include="Instructors\Commands\UpdateInstructor\" />

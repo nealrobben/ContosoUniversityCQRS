@@ -24,7 +24,7 @@ namespace ContosoUniversityCQRS.Persistence.Configurations
                 .IsRowVersion()
                 .IsConcurrencyToken();
 
-            builder.HasOne(d => d.Instructor)
+            builder.HasOne(d => d.Administrator)
                 .WithMany(p => p.Departments)
                 .HasForeignKey(d => d.InstructorID);
         }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversityCQRS.WebUI.Data;
 using ContosoUniversityCQRS.WebUI.Models;
+using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsOverview;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -12,14 +13,13 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
     {
         public DepartmentsController(SchoolContext context) : base(context)
         {
-
         }
 
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            var schoolContext = _context.Departments.Include(d => d.Administrator);
-            return View(await schoolContext.ToListAsync());
+            var result = await Mediator.Send(new GetDepartmentsOverviewQuery());
+            return View(result);
         }
 
         // GET: Departments/Details/5
