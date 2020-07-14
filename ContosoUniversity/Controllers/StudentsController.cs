@@ -15,11 +15,8 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         }
 
         // GET: Students
-        public async Task<IActionResult> Index(
-    string sortOrder,
-    string currentFilter,
-    string searchString,
-    int? pageNumber)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, 
+            string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -38,11 +35,12 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
             var students = from s in _context.Students
                            select s;
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 students = students.Where(s => s.LastName.Contains(searchString)
                                        || s.FirstMidName.Contains(searchString));
             }
+
             switch (sortOrder)
             {
                 case "name_desc":

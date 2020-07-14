@@ -24,7 +24,6 @@
     <Folder Include="Students\Commands\CreateStudent\" />
     <Folder Include="Students\Commands\DeleteStudent\" />
     <Folder Include="Students\Commands\UpdateStudent\" />
-    <Folder Include="Students\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
