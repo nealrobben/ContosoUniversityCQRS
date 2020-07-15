@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversityCQRS.WebUI.Data;
 using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview;
+using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseDetails;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -22,21 +23,10 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             return View(result);
         }
 
-        // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-                return NotFound();
-
-            var course = await _context.Courses
-                .Include(c => c.Department)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.CourseID == id);
-
-            if (course == null)
-                return NotFound();
-
-            return View(course);
+            var result = await Mediator.Send(new GetCourseDetailsQuery(id));
+            return View(result);
         }
 
         public IActionResult Create()
