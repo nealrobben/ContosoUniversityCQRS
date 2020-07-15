@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversityCQRS.WebUI.Data;
 using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsOverview;
+using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentDetails;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -15,32 +16,18 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         {
         }
 
-        // GET: Departments
         public async Task<IActionResult> Index()
         {
             var result = await Mediator.Send(new GetDepartmentsOverviewQuery());
             return View(result);
         }
 
-        // GET: Departments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
             {
-                return NotFound();
+                var result = await Mediator.Send(new GetDepartmentDetailsQuery(id));
+                return View(result);
             }
-
-            var department = await _context.Departments
-                .Include(i => i.Administrator)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
-
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(department);
         }
 
         // GET: Departments/Create
