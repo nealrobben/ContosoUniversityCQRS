@@ -5,11 +5,14 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview
 {
     public class StudentVM
     {
+        public int StudentID { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
 
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime EnrollmentDate { get; set; }
     }
 }

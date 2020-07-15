@@ -34,12 +34,20 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview
             }
         }
 
+        public StudentsOverviewVM()
+        {
+            Students = new List<StudentVM>();
+            PageNumber = 1;
+        }
+
         public StudentsOverviewVM(IList<StudentVM> students)
         {
             if (students != null)
                 Students = students;
             else
                 Students = new List<StudentVM>();
+
+            PageNumber = 1;
         }
     }
 }

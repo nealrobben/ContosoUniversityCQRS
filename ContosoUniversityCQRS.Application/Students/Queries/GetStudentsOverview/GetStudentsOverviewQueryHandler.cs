@@ -20,15 +20,15 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview
 
         public async Task<StudentsOverviewVM> Handle(GetStudentsOverviewQuery request, CancellationToken cancellationToken)
         {
-            var result = new StudentsOverviewVM(null); //TODO: pass correct list
+            var result = new StudentsOverviewVM();
 
             result.CurrentSort = request.SortOrder;
-            result.NameSortParm = String.IsNullOrEmpty(request.SortOrder) ? "name_desc" : "";
+            result.NameSortParm = string.IsNullOrEmpty(request.SortOrder) ? "name_desc" : "";
             result.DateSortParm = request.SortOrder == "Date" ? "date_desc" : "Date";
 
             if (request.SearchString != null)
             {
-                result.PageNumber = 1;
+                request.PageNumber = 1;
             }
             else
             {
@@ -60,6 +60,8 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview
             }
 
             result.TotalPages = await students.CountAsync();
+            result.PageNumber = request.PageNumber ?? 1;
+
             var items = await students.AsNoTracking().Skip((result.PageNumber - 1) * _pageSize)
                 .Take(_pageSize).ToListAsync();
 
@@ -67,13 +69,14 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview
             {
                 result.Students.Add(new StudentVM
                 {
+                    StudentID = student.ID,
                     FirstName = student.FirstMidName,
                     LastName = student.LastName,
                     EnrollmentDate = student.EnrollmentDate
                 });
             }
 
-            throw new NotImplementedException();
+            return result;
         }
     }
 }
