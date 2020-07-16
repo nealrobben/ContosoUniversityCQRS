@@ -6,6 +6,7 @@ using ContosoUniversityCQRS.WebUI.Data;
 using ContosoUniversityCQRS.WebUI.Models;
 using System;
 using ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview;
+using ContosoUniversityCQRS.Application.Students.Queries.GetStudentDetails;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -21,26 +22,10 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             return View(result);
         }
 
-        // GET: Students/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var student = await _context.Students
-                .Include(s => s.Enrollments)
-                .ThenInclude(e => e.Course)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id);
-
-            if (student == null)
-            {
-                return NotFound();
-            }
-
-            return View(student);
+            var result = await Mediator.Send(new GetStudentDetailsQuery(id));
+            return View(result);
         }
 
         // GET: Students/Create
