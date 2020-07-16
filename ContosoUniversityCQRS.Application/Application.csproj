@@ -20,7 +20,6 @@
     <Folder Include="Instructors\Commands\CreateInstructor\" />
     <Folder Include="Instructors\Commands\DeleteInstructor\" />
     <Folder Include="Instructors\Commands\UpdateInstructor\" />
-    <Folder Include="Instructors\Queries\" />
     <Folder Include="Students\Commands\CreateStudent\" />
     <Folder Include="Students\Commands\DeleteStudent\" />
     <Folder Include="Students\Commands\UpdateStudent\" />

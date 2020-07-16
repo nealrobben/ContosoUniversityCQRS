@@ -7,6 +7,7 @@ using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.WebUI.Models.SchoolViewModels;
 using System.Collections.Generic;
 using System;
+using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorDetails;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -14,7 +15,6 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
     {
         public InstructorsController(SchoolContext context) : base(context)
         {
-
         }
 
         public async Task<IActionResult> Index(int? id, int? courseID)
@@ -51,22 +51,10 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             return View(viewModel);
         }
 
-        // GET: Instructors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var instructor = await _context.Instructors
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
-
-            return View(instructor);
+            var result = await Mediator.Send(new GetInstructorDetailsQuery(id));
+            return View(result);
         }
 
         public IActionResult Create()
