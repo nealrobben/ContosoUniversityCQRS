@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversityCQRS.WebUI.Data;
@@ -7,6 +6,7 @@ using ContosoUniversityCQRS.WebUI.Models;
 using System;
 using ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview;
 using ContosoUniversityCQRS.Application.Students.Queries.GetStudentDetails;
+using ContosoUniversityCQRS.Application.Students.Commands.CreateStudent;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -28,30 +28,24 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             return View(result);
         }
 
-        // GET: Students/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Students/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LastName,FirstMidName,EnrollmentDate")] Student student)
+        public async Task<IActionResult> Create([Bind("LastName,FirstName,EnrollmentDate")] CreateStudentCommand command)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    _context.Add(student);
-                    await _context.SaveChangesAsync();
-
+                    var result = await Mediator.Send(command);
                     return RedirectToAction(nameof(Index));
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 //Log the error (uncomment ex variable name and write a log.
                 ModelState.AddModelError("", "Unable to save changes. " +
@@ -59,7 +53,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                     "see your system administrator.");
             }
 
-            return View(student);
+            return View(command);
         }
 
         // GET: Students/Edit/5

@@ -14,7 +14,6 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
     {
         public CoursesController(SchoolContext context) : base(context)
         {
-
         }
 
         public async Task<IActionResult> Index()
