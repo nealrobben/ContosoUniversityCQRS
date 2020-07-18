@@ -1,4 +1,4 @@
-﻿@model ContosoUniversityCQRS.WebUI.Models.Student
+﻿@model ContosoUniversityCQRS.Application.Students.Queries.DeleteConfirmation.DeleteStudentVM
 
 @{
     ViewData["Title"] = "Delete";
@@ -18,10 +18,10 @@
             @Html.DisplayFor(model => model.LastName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstMidName)
+            @Html.DisplayNameFor(model => model.FirstName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstMidName)
+            @Html.DisplayFor(model => model.FirstName)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.EnrollmentDate)
@@ -32,7 +32,7 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="ID" />
+        <input type="hidden" asp-for="StudentID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

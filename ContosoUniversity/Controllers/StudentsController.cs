@@ -8,6 +8,7 @@ using ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview;
 using ContosoUniversityCQRS.Application.Students.Queries.GetStudentDetails;
 using ContosoUniversityCQRS.Application.Students.Commands.CreateStudent;
 using ContosoUniversityCQRS.Application.Students.Commands.DeleteStudent;
+using ContosoUniversityCQRS.Application.Students.Queries.DeleteConfirmation;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -106,21 +107,9 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             return View(studentToUpdate);
         }
 
-        // GET: Students/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var student = await _context.Students
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
+            var result = await Mediator.Send(new GetDeleteConfirmationCommand(id));
 
             if (saveChangesError.GetValueOrDefault())
             {
@@ -129,7 +118,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                     "see your system administrator.";
             }
 
-            return View(student);
+            return View(result);
         }
 
         [HttpPost, ActionName("Delete")]
