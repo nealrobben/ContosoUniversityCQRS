@@ -8,6 +8,7 @@ using ContosoUniversityCQRS.WebUI.Models.SchoolViewModels;
 using System.Collections.Generic;
 using System;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorDetails;
+using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOverview;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -19,36 +20,8 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         public async Task<IActionResult> Index(int? id, int? courseID)
         {
-            var viewModel = new InstructorIndexData();
-            viewModel.Instructors = await _context.Instructors
-                  .Include(i => i.OfficeAssignment)
-                  .Include(i => i.CourseAssignments)
-                    .ThenInclude(i => i.Course)
-                        .ThenInclude(i => i.Enrollments)
-                            .ThenInclude(i => i.Student)
-                  .Include(i => i.CourseAssignments)
-                    .ThenInclude(i => i.Course)
-                        .ThenInclude(i => i.Department)
-                  .AsNoTracking()
-                  .OrderBy(i => i.LastName)
-                  .ToListAsync();
-
-            if (id != null)
-            {
-                ViewData["InstructorID"] = id.Value;
-                Instructor instructor = viewModel.Instructors.Where(
-                    i => i.ID == id.Value).Single();
-                viewModel.Courses = instructor.CourseAssignments.Select(s => s.Course);
-            }
-
-            if (courseID != null)
-            {
-                ViewData["CourseID"] = courseID.Value;
-                viewModel.Enrollments = viewModel.Courses.Where(
-                    x => x.CourseID == courseID).Single().Enrollments;
-            }
-
-            return View(viewModel);
+            var result = await Mediator.Send(new GetInstructorsOverviewQuery(id,courseID));
+            return View(result);
         }
 
         public async Task<IActionResult> Details(int? id)

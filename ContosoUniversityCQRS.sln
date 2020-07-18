@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "ContosoUnive
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BCD1790B-FC28-42F7-9C69-4CADA879B79D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "Application.UnitTests\Application.UnitTests.csproj", "{F609E0D3-26E4-4179-ABCF-C5DBC737A014}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.UnitTests", "Application.UnitTests\Application.UnitTests.csproj", "{F609E0D3-26E4-4179-ABCF-C5DBC737A014}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

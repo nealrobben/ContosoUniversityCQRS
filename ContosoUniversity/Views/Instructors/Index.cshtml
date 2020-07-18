@@ -1,4 +1,4 @@
-﻿@model ContosoUniversityCQRS.WebUI.Models.SchoolViewModels.InstructorIndexData
+﻿@model ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOverview.InstructorsOverviewVM
 
 @{
     ViewData["Title"] = "Instructors";
@@ -24,7 +24,7 @@
         @foreach (var item in Model.Instructors)
         {
             string selectedRow = "";
-            if (item.ID == (int?)ViewData["InstructorID"])
+            if (item.InstructorID == Model.SelectedInstructorID)
             {
                 selectedRow = "bg-success";
             }
@@ -33,30 +33,27 @@
                     @Html.DisplayFor(modelItem => item.LastName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FirstMidName)
+                    @Html.DisplayFor(modelItem => item.FirstName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.HireDate)
                 </td>
                 <td>
-                    @if (item.OfficeAssignment != null)
-                    {
-                        @item.OfficeAssignment.Location
-                    }
+                    @item.OfficeLocation
                 </td>
                 <td>
                     @{
                         foreach (var course in item.CourseAssignments)
                         {
-                            @course.Course.CourseID @:  @course.Course.Title <br />
+                            @course.CourseID @:  @course.CourseTitle <br />
                         }
                     }
                 </td>
                 <td>
-                    <a asp-action="Index" asp-route-id="@item.ID">Select</a> |
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="Index" asp-route-id="@item.InstructorID">Select</a> |
+                    <a asp-action="Edit" asp-route-id="@item.InstructorID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.InstructorID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.InstructorID">Delete</a>
                 </td>
             </tr>
         }
@@ -77,7 +74,7 @@
         @foreach (var item in Model.Courses)
         {
             string selectedRow = "";
-            if (item.CourseID == (int?)ViewData["CourseID"])
+            if (item.CourseID == Model.SelectedCourseID)
             {
                 selectedRow = "bg-success";
             }
@@ -92,7 +89,7 @@
                     @item.Title
                 </td>
                 <td>
-                    @item.Department.Name
+                    @item.DepartmentName
                 </td>
             </tr>
         }
@@ -114,10 +111,10 @@
         {
             <tr>
                 <td>
-                    @item.Student.FullName
+                    @item.StudentName
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Grade)
+                    @Html.DisplayFor(modelItem => item.StudentGrade)
                 </td>
             </tr>
         }
