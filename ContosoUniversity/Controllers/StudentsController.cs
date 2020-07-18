@@ -7,6 +7,7 @@ using System;
 using ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview;
 using ContosoUniversityCQRS.Application.Students.Queries.GetStudentDetails;
 using ContosoUniversityCQRS.Application.Students.Commands.CreateStudent;
+using ContosoUniversityCQRS.Application.Students.Commands.DeleteStudent;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -135,16 +136,10 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = await _context.Students.FindAsync(id);
-            if (student == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
             try
             {
-                _context.Students.Remove(student);
-                await _context.SaveChangesAsync();
+                var result = await Mediator.Send(new DeleteStudentCommand(id));
+
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException /* ex */)

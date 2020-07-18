@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentDetails
 {
-    public class GetStudentsOverviewQueryHandler : IRequestHandler<GetStudentDetailsQuery, StudentDetailsVM>
+    public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, StudentDetailsVM>
     {
         private readonly ISchoolContext _context;
 
-        public GetStudentsOverviewQueryHandler(ISchoolContext context)
+        public GetStudentDetailsQueryHandler(ISchoolContext context)
         {
             _context = context;
         }
