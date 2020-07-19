@@ -7,6 +7,7 @@ using ContosoUniversityCQRS.WebUI.Data;
 using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseDetails;
+using ContosoUniversityCQRS.Application.Courses.Commands.DeleteCourse;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -126,14 +127,11 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             return View(course);
         }
 
-        // POST: Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
+            await Mediator.Send(new DeleteCourseCommand(id));
             return RedirectToAction(nameof(Index));
         }
     }
