@@ -24,7 +24,7 @@ namespace ContosoUniversityCQRS.Application.Courses.Commands.DeleteCourse
                 throw new NotFoundException(nameof(Course), request.ID);
 
             _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

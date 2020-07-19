@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorDetails;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOverview;
+using ContosoUniversityCQRS.Application.Instructors.Commands.DeleteInstructor;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -196,24 +197,8 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            Instructor instructor = await _context.Instructors
-                .Include(i => i.CourseAssignments)
-                .SingleAsync(i => i.ID == id);
-
-            var departments = await _context.Departments
-                .Where(d => d.InstructorID == id)
-                .ToListAsync();
-            departments.ForEach(d => d.InstructorID = null);
-
-            _context.Instructors.Remove(instructor);
-
-            await _context.SaveChangesAsync();
+            await Mediator.Send(new DeleteInstructorCommand(id));
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool InstructorExists(int id)
-        {
-            return _context.Instructors.Any(e => e.ID == id);
         }
     }
 }
