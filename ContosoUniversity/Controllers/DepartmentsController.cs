@@ -7,6 +7,7 @@ using ContosoUniversityCQRS.WebUI.Data;
 using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsOverview;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentDetails;
+using ContosoUniversityCQRS.Application.Departments.Commands.DeleteDepartment;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -193,11 +194,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         {
             try
             {
-                if (await _context.Departments.AnyAsync(m => m.DepartmentID == department.DepartmentID))
-                {
-                    _context.Departments.Remove(department);
-                    await _context.SaveChangesAsync();
-                }
+                await Mediator.Send(new DeleteDepartmentCommand(department.DepartmentID));
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateConcurrencyException /* ex */)
@@ -205,11 +202,6 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 //Log the error (uncomment ex variable name and write a log.)
                 return RedirectToAction(nameof(Delete), new { concurrencyError = true, id = department.DepartmentID });
             }
-        }
-
-        private bool DepartmentExists(int id)
-        {
-            return _context.Departments.Any(e => e.DepartmentID == id);
         }
     }
 }
