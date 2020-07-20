@@ -8,6 +8,7 @@ using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseDetails;
 using ContosoUniversityCQRS.Application.Courses.Commands.DeleteCourse;
+using ContosoUniversityCQRS.Application.Courses.Queries.DeleteConfirmation;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -110,21 +111,10 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             ViewBag.DepartmentID = new SelectList(departmentsQuery.AsNoTracking(), "DepartmentID", "Name", selectedDepartment);
         }
 
-        // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-                return NotFound();
-
-            var course = await _context.Courses
-                .Include(c => c.Department)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.CourseID == id);
-
-            if (course == null)
-                return NotFound();
-
-            return View(course);
+            var result = await Mediator.Send(new GetDeleteCourseConfirmationCommand(id));
+            return View(result);
         }
 
         [HttpPost, ActionName("Delete")]
