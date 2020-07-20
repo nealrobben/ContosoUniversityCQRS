@@ -1,4 +1,4 @@
-﻿@model ContosoUniversityCQRS.WebUI.Models.Department
+﻿@model ContosoUniversityCQRS.Application.Departments.Queries.DeleteConfirmation.DeleteDepartmentVM
 
 @{
     ViewData["Title"] = "Delete";
@@ -38,10 +38,10 @@
             @Html.DisplayFor(model => model.RowVersion)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Administrator)
+            @Html.DisplayNameFor(model => model.AdministratorName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Administrator.FullName)
+            @Html.DisplayFor(model => model.AdministratorName)
         </dd>
     </dl>
 

@@ -8,6 +8,7 @@ using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsOverview;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentDetails;
 using ContosoUniversityCQRS.Application.Departments.Commands.DeleteDepartment;
+using ContosoUniversityCQRS.Application.Departments.Queries.DeleteConfirmation;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -157,23 +158,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _context.Departments
-                .Include(d => d.Administrator)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
-            if (department == null)
-            {
-                if (concurrencyError.GetValueOrDefault())
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                return NotFound();
-            }
+            var result = await Mediator.Send(new GetDeleteDepartmentConfirmationCommand(id));
 
             if (concurrencyError.GetValueOrDefault())
             {
@@ -185,7 +170,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                     + "click the Back to List hyperlink.";
             }
 
-            return View(department);
+            return View(result);
         }
 
         [HttpPost]
