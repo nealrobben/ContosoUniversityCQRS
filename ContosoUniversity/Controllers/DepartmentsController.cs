@@ -9,6 +9,9 @@ using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsOvervi
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentDetails;
 using ContosoUniversityCQRS.Application.Departments.Commands.DeleteDepartment;
 using ContosoUniversityCQRS.Application.Departments.Queries.DeleteConfirmation;
+using ContosoUniversityCQRS.Application.Departments.Commands.CreateDepartment;
+using ContosoUniversityCQRS.Domain.Entities;
+using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsLookup;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -32,28 +35,36 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             }
         }
 
-        // GET: Departments/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName");
+            var result = await Mediator.Send(new GetInstructorLookupCommand());
+
+            ViewData["InstructorID"] = new SelectList(result, "ID", "FullName");
             return View();
         }
 
-        // POST: Departments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DepartmentID,Name,Budget,StartDate,InstructorID,RowVersion")] Department department)
+        public async Task<IActionResult> Create([Bind("DepartmentID,Name,Budget,StartDate,InstructorID")] CreateDepartmentCommand command)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(department);
-                await _context.SaveChangesAsync();
+                await Mediator.Send(command);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", department.InstructorID);
-            return View(department);
+            catch (System.Exception)
+            {
+                var result = await Mediator.Send(new GetInstructorLookupCommand());
+                ViewData["InstructorID"] = new SelectList(result, "ID", "FullName", command.InstructorID);
+
+                return View(new Domain.Entities.Department
+                {
+                    Name = command.Name,
+                    Budget = command.Budget,
+                    StartDate = command.StartDate,
+                    InstructorID = command.InstructorID
+                });
+            }
         }
 
         // GET: Departments/Edit/5
@@ -90,7 +101,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
             if (departmentToUpdate == null)
             {
-                Department deletedDepartment = new Department();
+                Models.Department deletedDepartment = new Models.Department();
                 await TryUpdateModelAsync(deletedDepartment);
                 ModelState.AddModelError(string.Empty,
                     "Unable to save changes. The department was deleted by another user.");
@@ -100,7 +111,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
             _context.Entry(departmentToUpdate).Property("RowVersion").OriginalValue = rowVersion;
 
-            if (await TryUpdateModelAsync<Department>(
+            if (await TryUpdateModelAsync<Models.Department>(
                 departmentToUpdate,
                 "",
                 s => s.Name, s => s.StartDate, s => s.Budget, s => s.InstructorID))
@@ -113,7 +124,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 catch (DbUpdateConcurrencyException ex)
                 {
                     var exceptionEntry = ex.Entries.Single();
-                    var clientValues = (Department)exceptionEntry.Entity;
+                    var clientValues = (Models.Department)exceptionEntry.Entity;
                     var databaseEntry = exceptionEntry.GetDatabaseValues();
                     if (databaseEntry == null)
                     {
@@ -122,7 +133,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                     }
                     else
                     {
-                        var databaseValues = (Department)databaseEntry.ToObject();
+                        var databaseValues = (Models.Department)databaseEntry.ToObject();
 
                         if (databaseValues.Name != clientValues.Name)
                         {
@@ -138,7 +149,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                         }
                         if (databaseValues.InstructorID != clientValues.InstructorID)
                         {
-                            Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.ID == databaseValues.InstructorID);
+                            Models.Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.ID == databaseValues.InstructorID);
                             ModelState.AddModelError("InstructorID", $"Current value: {databaseInstructor?.FullName}");
                         }
 
@@ -175,17 +186,17 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Department department)
+        public async Task<IActionResult> Delete(int DepartmentID)
         {
             try
             {
-                await Mediator.Send(new DeleteDepartmentCommand(department.DepartmentID));
+                await Mediator.Send(new DeleteDepartmentCommand(DepartmentID));
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateConcurrencyException /* ex */)
             {
                 //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { concurrencyError = true, id = department.DepartmentID });
+                return RedirectToAction(nameof(Delete), new { concurrencyError = true, id = DepartmentID });
             }
         }
     }
