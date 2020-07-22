@@ -1,5 +1,6 @@
 ﻿using ContosoUniversityCQRS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,5 +18,9 @@ namespace ContosoUniversityCQRS.Application.Common.Interfaces
 
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+        EntityEntry Entry(object entity);
+
+        EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
     }
 }

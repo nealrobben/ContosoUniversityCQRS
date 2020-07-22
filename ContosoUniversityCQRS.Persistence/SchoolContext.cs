@@ -1,6 +1,7 @@
 ﻿using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,6 +34,16 @@ namespace ContosoUniversityCQRS.Persistence
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override EntityEntry Entry(object entity)
+        {
+            return base.Entry(entity);
+        }
+
+        public override EntityEntry<TEntity> Entry<TEntity>(TEntity entity)
+        {
+            return base.Entry(entity);
         }
     }
 }
