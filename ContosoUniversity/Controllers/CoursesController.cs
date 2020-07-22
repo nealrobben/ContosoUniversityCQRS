@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +9,7 @@ using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseDetails;
 using ContosoUniversityCQRS.Application.Courses.Commands.DeleteCourse;
 using ContosoUniversityCQRS.Application.Courses.Queries.DeleteConfirmation;
 using ContosoUniversityCQRS.Application.Courses.Commands.CreateCourse;
+using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsLookup;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -31,9 +31,9 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             return View(result);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            PopulateDepartmentsDropDownList();
+            await PopulateDepartmentsDropDownList();
             return View();
         }
 
@@ -48,7 +48,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             }
             catch (System.Exception)
             {
-                PopulateDepartmentsDropDownList(command.DepartmentID);
+                await PopulateDepartmentsDropDownList(command.DepartmentID);
 
                 return View(new Domain.Entities.Course
                 {
@@ -72,7 +72,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             if (course == null)
                 return NotFound();
 
-            PopulateDepartmentsDropDownList(course.DepartmentID);
+            await PopulateDepartmentsDropDownList(course.DepartmentID);
 
             return View(course);
         }
@@ -105,18 +105,16 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDepartmentsDropDownList(courseToUpdate.DepartmentID);
+            await PopulateDepartmentsDropDownList(courseToUpdate.DepartmentID);
 
             return View(courseToUpdate);
         }
 
-        private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
+        private async Task PopulateDepartmentsDropDownList(object selectedDepartment = null)
         {
-            var departmentsQuery = from d in _context.Departments
-                                   orderby d.Name
-                                   select d;
+            var result = await Mediator.Send(new GetDepartmentsLookupCommand());
 
-            ViewBag.DepartmentID = new SelectList(departmentsQuery.AsNoTracking(), "DepartmentID", "Name", selectedDepartment);
+            ViewBag.DepartmentID = new SelectList(result, "DepartmentID", "Name", selectedDepartment);
         }
 
         public async Task<IActionResult> Delete(int? id)
