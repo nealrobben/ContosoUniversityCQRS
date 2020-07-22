@@ -4,14 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversityCQRS.WebUI.Data;
-using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsOverview;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentDetails;
 using ContosoUniversityCQRS.Application.Departments.Commands.DeleteDepartment;
 using ContosoUniversityCQRS.Application.Departments.Queries.DeleteConfirmation;
 using ContosoUniversityCQRS.Application.Departments.Commands.CreateDepartment;
-using ContosoUniversityCQRS.Domain.Entities;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsLookup;
+using ContosoUniversityCQRS.Application.Departments.Queries.GetUpdateDepartment;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -67,25 +66,14 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             }
         }
 
-        // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var result = await Mediator.Send(new GetUpdateDepartmentCommand(id));
 
-            var department = await _context.Departments
-                .Include(i => i.Administrator)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
+            var instructors = await Mediator.Send(new GetInstructorLookupCommand());
+            ViewData["InstructorID"] = new SelectList(instructors, "ID", "FullName", result.InstructorID);
 
-            if (department == null)
-            {
-                return NotFound();
-            }
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", department.InstructorID);
-            return View(department);
+            return View(result);
         }
 
         [HttpPost]
@@ -105,7 +93,9 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 await TryUpdateModelAsync(deletedDepartment);
                 ModelState.AddModelError(string.Empty,
                     "Unable to save changes. The department was deleted by another user.");
-                ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", deletedDepartment.InstructorID);
+
+                var instructorsList = await Mediator.Send(new GetInstructorLookupCommand());
+                ViewData["InstructorID"] = new SelectList(instructorsList, "ID", "FullName", deletedDepartment.InstructorID);
                 return View(deletedDepartment);
             }
 
@@ -163,7 +153,9 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                     }
                 }
             }
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", departmentToUpdate.InstructorID);
+
+            var instructors = await Mediator.Send(new GetInstructorLookupCommand());
+            ViewData["InstructorID"] = new SelectList(instructors, "ID", "FullName", departmentToUpdate.InstructorID);
             return View(departmentToUpdate);
         }
 
