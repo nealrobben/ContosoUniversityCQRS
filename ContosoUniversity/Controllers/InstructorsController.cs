@@ -11,6 +11,8 @@ using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorDetails
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOverview;
 using ContosoUniversityCQRS.Application.Instructors.Commands.DeleteInstructor;
 using ContosoUniversityCQRS.Application.Instructors.Queries.DeleteConfirmation;
+using ContosoUniversityCQRS.Application.Instructors.Queries.GetCreateInstructor;
+using ContosoUniversityCQRS.Application.Instructors.Commands.CreateInstructor;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -34,34 +36,27 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         public IActionResult Create()
         {
-            var instructor = new Instructor();
-            instructor.CourseAssignments = new List<CourseAssignment>();
-            PopulateAssignedCourseData(instructor);
             return View();
         }
 
-        // POST: Instructors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstMidName,HireDate,LastName,OfficeAssignment")] Instructor instructor, string[] selectedCourses)
+        public async Task<IActionResult> Create([Bind("FirstName,HireDate,LastName")] CreateInstructorCommand command)
         {
-            if (selectedCourses != null)
+            try
             {
-                instructor.CourseAssignments = new List<CourseAssignment>();
-                foreach (var course in selectedCourses)
-                {
-                    var courseToAdd = new CourseAssignment { InstructorID = instructor.ID, CourseID = int.Parse(course) };
-                    instructor.CourseAssignments.Add(courseToAdd);
-                }
-            }
-            if (ModelState.IsValid)
-            {
-                _context.Add(instructor);
-                await _context.SaveChangesAsync();
+                await Mediator.Send(command);
                 return RedirectToAction(nameof(Index));
             }
-            PopulateAssignedCourseData(instructor);
-            return View(instructor);
+            catch (Exception)
+            {
+                return View(new CreateInstructorVM
+                {
+                    FirstName = command.FirstName,
+                    LastName = command.LastName,
+                    HireDate = command.HireDate
+                });
+            }
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -89,6 +84,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             var allCourses = _context.Courses;
             var instructorCourses = new HashSet<int>(instructor.CourseAssignments.Select(c => c.CourseID));
             var viewModel = new List<AssignedCourseData>();
+
             foreach (var course in allCourses)
             {
                 viewModel.Add(new AssignedCourseData
@@ -98,6 +94,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                     Assigned = instructorCourses.Contains(course.CourseID)
                 });
             }
+
             ViewData["Courses"] = viewModel;
         }
 

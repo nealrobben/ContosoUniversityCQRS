@@ -65,8 +65,6 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
             return View(result);
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost([Bind("StudentID, LastName,FirstName,EnrollmentDate")] UpdateStudentCommand command)
