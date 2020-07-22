@@ -11,6 +11,7 @@ using ContosoUniversityCQRS.Application.Courses.Queries.DeleteConfirmation;
 using ContosoUniversityCQRS.Application.Courses.Commands.CreateCourse;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsLookup;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetEditCourse;
+using ContosoUniversityCQRS.Application.Courses.Commands.UpdateCourse;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -72,35 +73,30 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
+        public async Task<IActionResult> EditPost(UpdateCourseCommand command)
         {
-            if (id == null)
-                return NotFound();
-
-            var courseToUpdate = await _context.Courses
-                .FirstOrDefaultAsync(c => c.CourseID == id);
-
-            if (await TryUpdateModelAsync<Course>(courseToUpdate,
-                "",
-                c => c.Credits, c => c.DepartmentID, c => c.Title))
+            try
             {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
-                }
+                await Mediator.Send(command);
                 return RedirectToAction(nameof(Index));
             }
+            catch (DbUpdateException)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, " +
+                    "see your system administrator.");
 
-            await PopulateDepartmentsDropDownList(courseToUpdate.DepartmentID);
+                await PopulateDepartmentsDropDownList(command.DepartmentID);
 
-            return View(courseToUpdate);
+                return View(new EditCourseVM 
+                {
+                    CourseID = command.CourseID.Value,
+                    Title = command.Title,
+                    Credits = command.Credits,
+                    DepartmentID = command.DepartmentID,
+                });
+            }
         }
 
         private async Task PopulateDepartmentsDropDownList(object selectedDepartment = null)
