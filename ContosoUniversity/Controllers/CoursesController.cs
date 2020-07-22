@@ -9,6 +9,7 @@ using ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseDetails;
 using ContosoUniversityCQRS.Application.Courses.Commands.DeleteCourse;
 using ContosoUniversityCQRS.Application.Courses.Queries.DeleteConfirmation;
+using ContosoUniversityCQRS.Application.Courses.Commands.CreateCourse;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -38,18 +39,25 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseID,Credits,DepartmentID,Title")] Course course)
+        public async Task<IActionResult> Create([Bind("CourseID,Credits,DepartmentID,Title")] CreateCourseCommand command)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+                await Mediator.Send(command);
                 return RedirectToAction(nameof(Index));
             }
+            catch (System.Exception)
+            {
+                PopulateDepartmentsDropDownList(command.DepartmentID);
 
-            PopulateDepartmentsDropDownList(course.DepartmentID);
-
-            return View(course);
+                return View(new Domain.Entities.Course
+                {
+                    CourseID = command.CourseID,
+                    Title = command.Title,
+                    Credits = command.Credits,
+                    DepartmentID = command.DepartmentID
+                });
+            }
         }
 
         public async Task<IActionResult> Edit(int? id)
