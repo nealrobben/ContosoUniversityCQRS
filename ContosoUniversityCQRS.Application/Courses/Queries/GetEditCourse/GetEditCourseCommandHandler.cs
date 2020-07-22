@@ -6,31 +6,30 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ContosoUniversityCQRS.Application.Courses.Queries.GetCourseDetails
+namespace ContosoUniversityCQRS.Application.Courses.Queries.GetEditCourse
 {
-    public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, CourseDetailVM>
+    public class GetEditCourseCommandHandler : IRequestHandler<GetEditCourseCommand, EditCourseVM>
     {
         private readonly ISchoolContext _context;
 
-        public GetCourseDetailsQueryHandler(ISchoolContext context)
+        public GetEditCourseCommandHandler(ISchoolContext context)
         {
             _context = context;
         }
 
-        public async Task<CourseDetailVM> Handle(GetCourseDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<EditCourseVM> Handle(GetEditCourseCommand request, CancellationToken cancellationToken)
         {
             if (request.ID == null)
                 throw new NotFoundException(nameof(Course), request.ID);
 
             var course = await _context.Courses
-                .Include(c => c.Department)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.CourseID == request.ID);
 
-            if(course == null)
+            if (course == null)
                 throw new NotFoundException(nameof(Course), request.ID);
 
-            return new CourseDetailVM
+            return new EditCourseVM
             {
                 CourseID = course.CourseID,
                 Title = course.Title,

@@ -1,6 +1,6 @@
-﻿namespace ContosoUniversityCQRS.Application.Courses.Queries.GetCourseDetails
+﻿namespace ContosoUniversityCQRS.Application.Courses.Queries.GetEditCourse
 {
-    public class CourseDetailVM
+    public class EditCourseVM
     {
         public int CourseID { get; set; }
 

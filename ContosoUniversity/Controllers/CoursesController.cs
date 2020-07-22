@@ -10,6 +10,7 @@ using ContosoUniversityCQRS.Application.Courses.Commands.DeleteCourse;
 using ContosoUniversityCQRS.Application.Courses.Queries.DeleteConfirmation;
 using ContosoUniversityCQRS.Application.Courses.Commands.CreateCourse;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsLookup;
+using ContosoUniversityCQRS.Application.Courses.Queries.GetEditCourse;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -62,19 +63,11 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-                return NotFound();
+            var result = await Mediator.Send(new GetEditCourseCommand(id));
 
-            var course = await _context.Courses
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.CourseID == id);
+            await PopulateDepartmentsDropDownList(result.DepartmentID);
 
-            if (course == null)
-                return NotFound();
-
-            await PopulateDepartmentsDropDownList(course.DepartmentID);
-
-            return View(course);
+            return View(result);
         }
 
         [HttpPost, ActionName("Edit")]
@@ -113,7 +106,6 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         private async Task PopulateDepartmentsDropDownList(object selectedDepartment = null)
         {
             var result = await Mediator.Send(new GetDepartmentsLookupCommand());
-
             ViewBag.DepartmentID = new SelectList(result, "DepartmentID", "Name", selectedDepartment);
         }
 
