@@ -13,6 +13,7 @@ using ContosoUniversityCQRS.Application.Instructors.Commands.DeleteInstructor;
 using ContosoUniversityCQRS.Application.Instructors.Queries.DeleteConfirmation;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetCreateInstructor;
 using ContosoUniversityCQRS.Application.Instructors.Commands.CreateInstructor;
+using ContosoUniversityCQRS.Application.Instructors.Queries.GetUpdateInstructor;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -61,28 +62,18 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var result = await Mediator.Send(new GetUpdateInstructorCommand(id));
 
-            var instructor = await _context.Instructors
-                .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments).ThenInclude(i => i.Course)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
-            PopulateAssignedCourseData(instructor);
-            return View(instructor);
+            PopulateAssignedCourseData(result.InstructorID);
+
+            return View(result);
         }
 
-        private void PopulateAssignedCourseData(Instructor instructor)
+        private void PopulateAssignedCourseData(int instructorID)
         {
             var allCourses = _context.Courses;
-            var instructorCourses = new HashSet<int>(instructor.CourseAssignments.Select(c => c.CourseID));
+            //var instructorCourses = new HashSet<int>(instructor.CourseAssignments.Select(c => c.CourseID));
+            var instructorCourses = new HashSet<int>(_context.CourseAssignments.Where(x => x.InstructorID == instructorID).Select(x => x.CourseID));
             var viewModel = new List<AssignedCourseData>();
 
             foreach (var course in allCourses)
@@ -137,7 +128,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 return RedirectToAction(nameof(Index));
             }
             UpdateInstructorCourses(selectedCourses, instructorToUpdate);
-            PopulateAssignedCourseData(instructorToUpdate);
+            PopulateAssignedCourseData(instructorToUpdate.ID);
             return View(instructorToUpdate);
         }
 
