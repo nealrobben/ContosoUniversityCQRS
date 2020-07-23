@@ -1,6 +1,6 @@
-﻿namespace ContosoUniversityCQRS.Application.CourseAssignments.Queries.GetCourseAssignments
+﻿namespace ContosoUniversityCQRS.Application.Courses.Queries.GetCourseList
 {
-    public class CourseAssignmentVM
+    public class CourseSelectionVM
     {
         public int CourseID { get; set; }
 

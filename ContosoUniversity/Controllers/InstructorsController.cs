@@ -14,6 +14,7 @@ using ContosoUniversityCQRS.Application.Instructors.Queries.DeleteConfirmation;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetCreateInstructor;
 using ContosoUniversityCQRS.Application.Instructors.Commands.CreateInstructor;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetUpdateInstructor;
+using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseList;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -64,29 +65,14 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
         {
             var result = await Mediator.Send(new GetUpdateInstructorCommand(id));
 
-            PopulateAssignedCourseData(result.InstructorID);
+            await PopulateAssignedCourseData(result.InstructorID);
 
             return View(result);
         }
 
-        private void PopulateAssignedCourseData(int instructorID)
+        private async Task PopulateAssignedCourseData(int instructorID)
         {
-            var allCourses = _context.Courses;
-            //var instructorCourses = new HashSet<int>(instructor.CourseAssignments.Select(c => c.CourseID));
-            var instructorCourses = new HashSet<int>(_context.CourseAssignments.Where(x => x.InstructorID == instructorID).Select(x => x.CourseID));
-            var viewModel = new List<AssignedCourseData>();
-
-            foreach (var course in allCourses)
-            {
-                viewModel.Add(new AssignedCourseData
-                {
-                    CourseID = course.CourseID,
-                    Title = course.Title,
-                    Assigned = instructorCourses.Contains(course.CourseID)
-                });
-            }
-
-            ViewData["Courses"] = viewModel;
+            ViewData["Courses"] = await Mediator.Send(new GetCourseListCommand(instructorID));
         }
 
         [HttpPost]
@@ -128,7 +114,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 return RedirectToAction(nameof(Index));
             }
             UpdateInstructorCourses(selectedCourses, instructorToUpdate);
-            PopulateAssignedCourseData(instructorToUpdate.ID);
+            await PopulateAssignedCourseData(instructorToUpdate.ID);
             return View(instructorToUpdate);
         }
 
