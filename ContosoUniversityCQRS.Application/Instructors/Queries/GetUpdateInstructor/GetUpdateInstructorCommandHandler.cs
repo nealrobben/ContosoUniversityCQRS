@@ -37,7 +37,7 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetUpdateInstruc
                 LastName = instructor.LastName,
                 FirstName = instructor.FirstMidName,
                 HireDate = instructor.HireDate,
-                OfficeLocation = instructor.OfficeAssignment.Location
+                OfficeLocation = instructor?.OfficeAssignment?.Location
             };
         }
     }

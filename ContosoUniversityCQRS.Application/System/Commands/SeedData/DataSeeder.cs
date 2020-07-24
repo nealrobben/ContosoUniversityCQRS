@@ -115,43 +115,43 @@ namespace ContosoUniversityCQRS.Application.System.Commands.SeedData
 
         private async Task AddCourseAssignments(Instructor[] instructors, Course[] courses)
         {
-            var courseInstructors = new CourseAssignment[]
+            var courseInstructors = new Domain.Entities.CourseAssignment[]
             {
-                new CourseAssignment {
+                new Domain.Entities.CourseAssignment {
                     CourseID = courses.Single(c => c.Title == "Chemistry" ).CourseID,
                     InstructorID = instructors.Single(i => i.LastName == "Kapoor").ID
                     },
-                new CourseAssignment {
+                new Domain.Entities.CourseAssignment {
                     CourseID = courses.Single(c => c.Title == "Chemistry" ).CourseID,
                     InstructorID = instructors.Single(i => i.LastName == "Harui").ID
                     },
-                new CourseAssignment {
+                new Domain.Entities.CourseAssignment {
                     CourseID = courses.Single(c => c.Title == "Microeconomics" ).CourseID,
                     InstructorID = instructors.Single(i => i.LastName == "Zheng").ID
                     },
-                new CourseAssignment {
+                new Domain.Entities.CourseAssignment {
                     CourseID = courses.Single(c => c.Title == "Macroeconomics" ).CourseID,
                     InstructorID = instructors.Single(i => i.LastName == "Zheng").ID
                     },
-                new CourseAssignment {
+                new Domain.Entities.CourseAssignment {
                     CourseID = courses.Single(c => c.Title == "Calculus" ).CourseID,
                     InstructorID = instructors.Single(i => i.LastName == "Fakhouri").ID
                     },
-                new CourseAssignment {
+                new Domain.Entities.CourseAssignment {
                     CourseID = courses.Single(c => c.Title == "Trigonometry" ).CourseID,
                     InstructorID = instructors.Single(i => i.LastName == "Harui").ID
                     },
-                new CourseAssignment {
+                new Domain.Entities.CourseAssignment {
                     CourseID = courses.Single(c => c.Title == "Composition" ).CourseID,
                     InstructorID = instructors.Single(i => i.LastName == "Abercrombie").ID
                     },
-                new CourseAssignment {
+                new Domain.Entities.CourseAssignment {
                     CourseID = courses.Single(c => c.Title == "Literature" ).CourseID,
                     InstructorID = instructors.Single(i => i.LastName == "Abercrombie").ID
                     },
             };
 
-            foreach (CourseAssignment ci in courseInstructors)
+            foreach (Domain.Entities.CourseAssignment ci in courseInstructors)
             {
                 _context.CourseAssignments.Add(ci);
             }

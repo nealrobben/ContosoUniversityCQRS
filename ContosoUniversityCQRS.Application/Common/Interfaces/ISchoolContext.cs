@@ -14,7 +14,7 @@ namespace ContosoUniversityCQRS.Application.Common.Interfaces
         public DbSet<Department> Departments { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<OfficeAssignment> OfficeAssignments { get; set; }
-        public DbSet<CourseAssignment> CourseAssignments { get; set; }
+        public DbSet<Domain.Entities.CourseAssignment> CourseAssignments { get; set; }
 
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

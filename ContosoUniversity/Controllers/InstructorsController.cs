@@ -15,6 +15,7 @@ using ContosoUniversityCQRS.Application.Instructors.Queries.GetCreateInstructor;
 using ContosoUniversityCQRS.Application.Instructors.Commands.CreateInstructor;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetUpdateInstructor;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseList;
+using ContosoUniversityCQRS.Application.CourseAssignment;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -95,11 +96,13 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 "",
                 i => i.FirstMidName, i => i.LastName, i => i.HireDate, i => i.OfficeAssignment))
             {
-                if (String.IsNullOrWhiteSpace(instructorToUpdate.OfficeAssignment?.Location))
+                if (string.IsNullOrWhiteSpace(instructorToUpdate.OfficeAssignment?.Location))
                 {
                     instructorToUpdate.OfficeAssignment = null;
                 }
-                UpdateInstructorCourses(selectedCourses, instructorToUpdate);
+
+                await UpdateInstructorCourses(selectedCourses, instructorToUpdate);
+
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -113,41 +116,15 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            UpdateInstructorCourses(selectedCourses, instructorToUpdate);
+
             await PopulateAssignedCourseData(instructorToUpdate.ID);
+
             return View(instructorToUpdate);
         }
 
-        private void UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
+        private async Task UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
         {
-            if (selectedCourses == null)
-            {
-                instructorToUpdate.CourseAssignments = new List<CourseAssignment>();
-                return;
-            }
-
-            var selectedCoursesHS = new HashSet<string>(selectedCourses);
-            var instructorCourses = new HashSet<int>
-                (instructorToUpdate.CourseAssignments.Select(c => c.Course.CourseID));
-            foreach (var course in _context.Courses)
-            {
-                if (selectedCoursesHS.Contains(course.CourseID.ToString()))
-                {
-                    if (!instructorCourses.Contains(course.CourseID))
-                    {
-                        instructorToUpdate.CourseAssignments.Add(new CourseAssignment { InstructorID = instructorToUpdate.ID, CourseID = course.CourseID });
-                    }
-                }
-                else
-                {
-
-                    if (instructorCourses.Contains(course.CourseID))
-                    {
-                        CourseAssignment courseToRemove = instructorToUpdate.CourseAssignments.FirstOrDefault(i => i.CourseID == course.CourseID);
-                        _context.Remove(courseToRemove);
-                    }
-                }
-            }
+            await Mediator.Send(new UpdateCourseAssignmentsCommand(instructorToUpdate.ID, selectedCourses));
         }
 
         public async Task<IActionResult> Delete(int? id)
