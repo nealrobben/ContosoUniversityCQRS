@@ -1,5 +1,4 @@
 using ContosoUniversityCQRS.Application.System.Commands.SeedData;
-using ContosoUniversityCQRS.WebUI.Data;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

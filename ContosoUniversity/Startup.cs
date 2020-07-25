@@ -1,9 +1,7 @@
 using ContosoUniversityCQRS.Application;
 using ContosoUniversityCQRS.Persistence;
-using ContosoUniversityCQRS.WebUI.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,8 +21,6 @@ namespace ContosoUniversityCQRS.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
-            services.AddDbContext<Data.SchoolContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddPersistence(Configuration);
             services.AddApplication();

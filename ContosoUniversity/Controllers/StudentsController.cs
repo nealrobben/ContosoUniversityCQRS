@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ContosoUniversityCQRS.WebUI.Data;
 using System;
 using ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview;
 using ContosoUniversityCQRS.Application.Students.Queries.GetStudentDetails;
@@ -15,7 +14,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 {
     public class StudentsController : BaseController
     {
-        public StudentsController(SchoolContext context) : base(context)
+        public StudentsController()
         {
         }
 

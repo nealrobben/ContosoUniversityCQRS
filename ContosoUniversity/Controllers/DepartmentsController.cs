@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ContosoUniversityCQRS.WebUI.Data;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsOverview;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentDetails;
 using ContosoUniversityCQRS.Application.Departments.Commands.DeleteDepartment;
@@ -17,7 +16,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 {
     public class DepartmentsController : BaseController
     {
-        public DepartmentsController(SchoolContext context) : base(context)
+        public DepartmentsController()
         {
         }
 
@@ -124,8 +123,8 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                     }
                     if (databaseValues.InstructorID != clientValues.InstructorID)
                     {
-                        Models.Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.ID == databaseValues.InstructorID);
-                        ModelState.AddModelError("InstructorID", $"Current value: {databaseInstructor?.FullName}");
+                        //Models.Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.ID == databaseValues.InstructorID);
+                        //ModelState.AddModelError("InstructorID", $"Current value: {databaseInstructor?.FullName}");
                     }
 
                     ModelState.AddModelError(string.Empty, "The record you attempted to edit "

@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ContosoUniversityCQRS.WebUI.Models;
-using ContosoUniversityCQRS.WebUI.Data;
 using System.Threading.Tasks;
 using ContosoUniversityCQRS.Application.Home.Queries.GetAboutInfo;
 
@@ -9,7 +8,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 {
     public class HomeController : BaseController
     {
-        public HomeController( SchoolContext context) : base(context)
+        public HomeController()
         {
         }
 

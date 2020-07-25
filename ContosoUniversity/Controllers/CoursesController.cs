@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ContosoUniversityCQRS.WebUI.Data;
-using ContosoUniversityCQRS.WebUI.Models;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseDetails;
 using ContosoUniversityCQRS.Application.Courses.Commands.DeleteCourse;
@@ -17,7 +15,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 {
     public class CoursesController : BaseController
     {
-        public CoursesController(SchoolContext context) : base(context)
+        public CoursesController()
         {
         }
 
