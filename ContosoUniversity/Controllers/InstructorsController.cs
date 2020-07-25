@@ -1,11 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversityCQRS.WebUI.Data;
 using ContosoUniversityCQRS.WebUI.Models;
-using ContosoUniversityCQRS.WebUI.Models.SchoolViewModels;
-using System.Collections.Generic;
 using System;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorDetails;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOverview;
