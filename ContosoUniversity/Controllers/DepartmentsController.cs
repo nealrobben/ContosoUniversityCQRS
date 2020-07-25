@@ -11,6 +11,7 @@ using ContosoUniversityCQRS.Application.Departments.Commands.CreateDepartment;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsLookup;
 using ContosoUniversityCQRS.Application.Departments.Queries.GetUpdateDepartment;
 using ContosoUniversityCQRS.Application.Departments.Commands.UpdateDepartment;
+using ContosoUniversityCQRS.Domain.Entities;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -98,7 +99,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 };
 
                 var exceptionEntry = ex.Entries.Single();
-                var clientValues = (Models.Department)exceptionEntry.Entity;
+                var clientValues = (Department)exceptionEntry.Entity;
                 var databaseEntry = exceptionEntry.GetDatabaseValues();
                 if (databaseEntry == null)
                 {
@@ -107,7 +108,7 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
                 }
                 else
                 {
-                    var databaseValues = (Models.Department)databaseEntry.ToObject();
+                    var databaseValues = (Department)databaseEntry.ToObject();
 
                     if (databaseValues.Name != clientValues.Name)
                     {
