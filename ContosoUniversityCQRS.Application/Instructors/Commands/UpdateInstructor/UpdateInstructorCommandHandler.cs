@@ -34,6 +34,10 @@ namespace ContosoUniversityCQRS.Application.Instructors.Commands.UpdateInstructo
             instructorToUpdate.LastName = request.LastName;
             instructorToUpdate.FirstMidName = request.FirstName;
             instructorToUpdate.HireDate = request.HireDate;
+
+            if (instructorToUpdate.OfficeAssignment == null)
+                instructorToUpdate.OfficeAssignment = new OfficeAssignment();
+
             instructorToUpdate.OfficeAssignment.Location = request.OfficeLocation;
 
             await _context.SaveChangesAsync(cancellationToken);

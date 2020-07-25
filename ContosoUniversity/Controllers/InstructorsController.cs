@@ -13,6 +13,7 @@ using ContosoUniversityCQRS.Application.Instructors.Commands.CreateInstructor;
 using ContosoUniversityCQRS.Application.Instructors.Queries.GetUpdateInstructor;
 using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseList;
 using ContosoUniversityCQRS.Application.CourseAssignment;
+using ContosoUniversityCQRS.Application.Instructors.Commands.UpdateInstructor;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {
@@ -75,48 +76,29 @@ namespace ContosoUniversityCQRS.WebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, string[] selectedCourses)
+        public async Task<IActionResult> Edit(UpdateInstructorCommand command, string[] selectedCourses)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
-
-            var instructorToUpdate = await _context.Instructors
-                .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments)
-                    .ThenInclude(i => i.Course)
-                .FirstOrDefaultAsync(m => m.ID == id);
-
-            if (await TryUpdateModelAsync<Instructor>(
-                instructorToUpdate,
-                "",
-                i => i.FirstMidName, i => i.LastName, i => i.HireDate, i => i.OfficeAssignment))
-            {
-                if (string.IsNullOrWhiteSpace(instructorToUpdate.OfficeAssignment?.Location))
-                {
-                    instructorToUpdate.OfficeAssignment = null;
-                }
-
-                await UpdateInstructorCourses(selectedCourses, instructorToUpdate);
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
-                }
+                await Mediator.Send(command);
                 return RedirectToAction(nameof(Index));
             }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, " +
+                    "see your system administrator.");
 
-            await PopulateAssignedCourseData(instructorToUpdate.ID);
-
-            return View(instructorToUpdate);
+                await PopulateAssignedCourseData(command.InstructorID.Value);
+                return View(new UpdateInstructorVM 
+                {
+                    InstructorID = command.InstructorID.Value,
+                    LastName = command.LastName,
+                    FirstName = command.FirstName,
+                    HireDate = command.HireDate,
+                    OfficeLocation = command.OfficeLocation
+                });
+            }
         }
 
         private async Task UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
