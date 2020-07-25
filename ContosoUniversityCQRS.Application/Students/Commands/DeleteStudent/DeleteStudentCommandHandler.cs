@@ -24,7 +24,7 @@ namespace ContosoUniversityCQRS.Application.Students.Commands.DeleteStudent
                 throw new NotFoundException(nameof(Student), request.ID);
 
             _context.Students.Remove(student);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

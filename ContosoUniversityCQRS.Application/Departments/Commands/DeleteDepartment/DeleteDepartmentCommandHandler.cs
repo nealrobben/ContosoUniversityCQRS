@@ -24,7 +24,7 @@ namespace ContosoUniversityCQRS.Application.Departments.Commands.DeleteDepartmen
                 throw new NotFoundException(nameof(Department), request.ID);
 
             _context.Departments.Remove(department);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

@@ -24,7 +24,7 @@ namespace ContosoUniversityCQRS.Application.Students.Commands.CreateStudent
                 EnrollmentDate = request.EnrollmentDate
             });
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }
