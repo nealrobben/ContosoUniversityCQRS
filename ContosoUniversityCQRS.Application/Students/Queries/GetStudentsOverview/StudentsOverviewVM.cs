@@ -49,5 +49,13 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview
 
             PageNumber = 1;
         }
+
+        public void AddStudents(List<StudentVM> students)
+        {
+            foreach (var student in students)
+            {
+                Students.Add(student);
+            }
+        }
     }
 }

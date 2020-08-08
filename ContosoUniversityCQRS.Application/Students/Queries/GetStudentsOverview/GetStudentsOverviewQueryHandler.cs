@@ -5,17 +5,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper.QueryableExtensions;
+using AutoMapper;
 
 namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview
 {
     public class GetStudentsOverviewQueryHandler : IRequestHandler<GetStudentsOverviewQuery, StudentsOverviewVM>
     {
-        private readonly ISchoolContext _context;
         private const int _pageSize = 3;
 
-        public GetStudentsOverviewQueryHandler(ISchoolContext context)
+        private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
+
+        public GetStudentsOverviewQueryHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<StudentsOverviewVM> Handle(GetStudentsOverviewQuery request, CancellationToken cancellationToken)
@@ -63,18 +68,11 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentsOverview
             result.PageNumber = request.PageNumber ?? 1;
 
             var items = await students.AsNoTracking().Skip((result.PageNumber - 1) * _pageSize)
-                .Take(_pageSize).ToListAsync();
+                .Take(_pageSize)
+                .ProjectTo<StudentVM>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
 
-            foreach(var student in items)
-            {
-                result.Students.Add(new StudentVM
-                {
-                    StudentID = student.ID,
-                    FirstName = student.FirstMidName,
-                    LastName = student.LastName,
-                    EnrollmentDate = student.EnrollmentDate
-                });
-            }
+            result.AddStudents(items);
 
             return result;
         }
