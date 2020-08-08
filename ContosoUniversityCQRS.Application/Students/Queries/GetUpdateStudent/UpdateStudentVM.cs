@@ -1,9 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using ContosoUniversityCQRS.Application.Common.Mappings;
+using ContosoUniversityCQRS.Domain.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ContosoUniversityCQRS.Application.Students.Queries.GetUpdateStudent
 {
-    public class UpdateStudentVM
+    public class UpdateStudentVM : IMapFrom<Student>
     {
         public int? StudentID { get; set; }
 
@@ -14,5 +17,12 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetUpdateStudent
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime EnrollmentDate { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Student, UpdateStudentVM>()
+                .ForMember(d => d.StudentID, opt => opt.MapFrom(s => s.ID))
+                .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.FirstMidName));
+        }
     }
 }
