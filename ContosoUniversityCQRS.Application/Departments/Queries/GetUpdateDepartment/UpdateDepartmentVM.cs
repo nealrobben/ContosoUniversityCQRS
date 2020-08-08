@@ -1,9 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using ContosoUniversityCQRS.Application.Common.Mappings;
+using ContosoUniversityCQRS.Domain.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ContosoUniversityCQRS.Application.Departments.Queries.GetUpdateDepartment
 {
-    public class UpdateDepartmentVM
+    public class UpdateDepartmentVM : IMapFrom<Department>
     {
         public int DepartmentID { get; set; }
 
@@ -18,5 +21,10 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.GetUpdateDepartm
         public byte[] RowVersion { get; set; }
 
         public int? InstructorID { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Department, UpdateDepartmentVM>();
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Exceptions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Exceptions;
 using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using MediatR;
@@ -11,10 +13,12 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.GetUpdateDepartm
     public class GetUpdateDepartmentCommandHandler : IRequestHandler<GetUpdateDepartmentCommand, UpdateDepartmentVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetUpdateDepartmentCommandHandler(ISchoolContext context)
+        public GetUpdateDepartmentCommandHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<UpdateDepartmentVM> Handle(GetUpdateDepartmentCommand request, CancellationToken cancellationToken)
@@ -25,20 +29,13 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.GetUpdateDepartm
             var department = await _context.Departments
                 .Include(i => i.Administrator)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.DepartmentID == request.ID);
+                .ProjectTo<UpdateDepartmentVM>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(m => m.DepartmentID == request.ID, cancellationToken);
 
             if(department == null)
                 throw new NotFoundException(nameof(Department), request.ID);
 
-            return new UpdateDepartmentVM
-            {
-                 DepartmentID = department.DepartmentID,
-                 Name = department.Name,
-                 Budget = department.Budget,
-                 StartDate = department.StartDate,
-                 RowVersion = department.RowVersion,
-                 InstructorID = department.Administrator.ID
-            };
+            return department;
         }
     }
 }
