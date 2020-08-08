@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Exceptions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Exceptions;
 using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using MediatR;
@@ -8,13 +10,15 @@ using System.Threading.Tasks;
 
 namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetUpdateInstructor
 {
-    class GetUpdateInstructorCommandHandler : IRequestHandler<GetUpdateInstructorCommand, UpdateInstructorVM>
+    public class GetUpdateInstructorCommandHandler : IRequestHandler<GetUpdateInstructorCommand, UpdateInstructorVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetUpdateInstructorCommandHandler(ISchoolContext context)
+        public GetUpdateInstructorCommandHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<UpdateInstructorVM> Handle(GetUpdateInstructorCommand request, CancellationToken cancellationToken)
@@ -26,19 +30,13 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetUpdateInstruc
                 .Include(i => i.OfficeAssignment)
                 .Include(i => i.CourseAssignments).ThenInclude(i => i.Course)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == request.ID);
+                .ProjectTo<UpdateInstructorVM>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(m => m.InstructorID == request.ID, cancellationToken);
 
             if (instructor == null)
                 throw new NotFoundException(nameof(Instructor), request.ID);
 
-            return new UpdateInstructorVM
-            {
-                InstructorID = instructor.ID,
-                LastName = instructor.LastName,
-                FirstName = instructor.FirstMidName,
-                HireDate = instructor.HireDate,
-                OfficeLocation = instructor?.OfficeAssignment?.Location
-            };
+            return instructor;
         }
     }
 }

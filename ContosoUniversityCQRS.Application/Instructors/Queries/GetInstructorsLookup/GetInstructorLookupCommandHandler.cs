@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Interfaces;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -11,10 +13,12 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsLo
     public class GetInstructorLookupCommandHandler : IRequestHandler<GetInstructorLookupCommand, List<InstructorLookupVM>>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetInstructorLookupCommandHandler(ISchoolContext context)
+        public GetInstructorLookupCommandHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<List<InstructorLookupVM>> Handle(GetInstructorLookupCommand request, CancellationToken cancellationToken)
@@ -22,12 +26,8 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsLo
             return await _context.Instructors
                 .AsNoTracking()
                 .OrderBy(x => x.LastName)
-                .Select(x => new InstructorLookupVM
-                {
-                    ID = x.ID,
-                    FullName = x.FullName
-                })
-                .ToListAsync();
+                .ProjectTo<InstructorLookupVM>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
         }
     }
 }
