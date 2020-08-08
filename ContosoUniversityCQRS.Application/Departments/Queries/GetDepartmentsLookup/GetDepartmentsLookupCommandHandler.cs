@@ -5,16 +5,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsLookup
 {
     public class GetDepartmentsLookupCommandHandler : IRequestHandler<GetDepartmentsLookupCommand, List<DepartmentLookupVM>>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetDepartmentsLookupCommandHandler(ISchoolContext context)
+        public GetDepartmentsLookupCommandHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<List<DepartmentLookupVM>> Handle(GetDepartmentsLookupCommand request, CancellationToken cancellationToken)
@@ -22,12 +26,8 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsLo
             return await _context.Departments
                 .AsNoTracking()
                 .OrderBy(x => x.Name)
-                .Select(x => new DepartmentLookupVM
-                {
-                    DepartmentID = x.DepartmentID,
-                    Name = x.Name
-                })
-                .ToListAsync();
+                .ProjectTo<DepartmentLookupVM>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
         }
     }
 }
