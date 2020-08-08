@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Exceptions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Exceptions;
 using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using MediatR;
@@ -11,10 +13,12 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentDetails
     public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, StudentDetailsVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetStudentDetailsQueryHandler(ISchoolContext context)
+        public GetStudentDetailsQueryHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<StudentDetailsVM> Handle(GetStudentDetailsQuery request, CancellationToken cancellationToken)
@@ -26,29 +30,13 @@ namespace ContosoUniversityCQRS.Application.Students.Queries.GetStudentDetails
                 .Include(s => s.Enrollments)
                 .ThenInclude(e => e.Course)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == request.ID);
+                .ProjectTo<StudentDetailsVM>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(m => m.StudentID == request.ID);
 
             if (student == null)
                 throw new NotFoundException(nameof(Student), request.ID);
 
-            var result = new StudentDetailsVM
-            {
-                StudentID = student.ID,
-                FirstName = student.FirstMidName,
-                LastName = student.LastName,
-                EnrollmentDate = student.EnrollmentDate
-            };
-
-            foreach(var enrollment in student.Enrollments)
-            {
-                result.Enrollments.Add(new EnrollmentVM
-                {
-                    CourseTitle = enrollment.Course.Title,
-                    Grade = enrollment.Grade
-                });
-            }
-
-            return result;
+            return student;
         }
     }
 }
