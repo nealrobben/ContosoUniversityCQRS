@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Exceptions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Exceptions;
 using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using MediatR;
@@ -11,10 +13,12 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentDet
     public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDetailsQuery, DepartmentDetailVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetDepartmentDetailsQueryHandler(ISchoolContext context)
+        public GetDepartmentDetailsQueryHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<DepartmentDetailVM> Handle(GetDepartmentDetailsQuery request, CancellationToken cancellationToken)
@@ -25,19 +29,13 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentDet
             var department = await _context.Departments
                 .Include(i => i.Administrator)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.DepartmentID == request.ID);
+                .ProjectTo<DepartmentDetailVM>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(m => m.DepartmentID == request.ID, cancellationToken);
 
             if(department == null)
                 throw new NotFoundException(nameof(Department), request.ID);
 
-            return new DepartmentDetailVM
-            {
-                DepartmentID = department.DepartmentID,
-                Name = department.Name,
-                Budget = department.Budget,
-                StartDate = department.StartDate,
-                AdministratorName = department.Administrator.FullName
-            };
+            return department;
         }
     }
 }
