@@ -1,9 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using ContosoUniversityCQRS.Application.Common.Mappings;
+using ContosoUniversityCQRS.Domain.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ContosoUniversityCQRS.Application.Departments.Queries.DeleteConfirmation
 {
-    public class DeleteDepartmentVM
+    public class DeleteDepartmentVM : IMapFrom<Department>
     {
         public int DepartmentID { get; set; }
 
@@ -18,5 +21,11 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.DeleteConfirmati
         public byte[] RowVersion { get; set; }
 
         public string AdministratorName { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Department, DeleteDepartmentVM>()
+                .ForMember(d => d.AdministratorName, opt => opt.MapFrom(s => s.Administrator != null ? s.Administrator.FullName : string.Empty));
+        }
     }
 }

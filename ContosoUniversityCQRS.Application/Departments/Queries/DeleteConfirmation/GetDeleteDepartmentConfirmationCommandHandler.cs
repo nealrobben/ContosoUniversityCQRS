@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Exceptions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Exceptions;
 using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using MediatR;
@@ -11,10 +13,12 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.DeleteConfirmati
     public class GetDeleteDepartmentConfirmationCommandHandler : IRequestHandler<GetDeleteDepartmentConfirmationCommand, DeleteDepartmentVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetDeleteDepartmentConfirmationCommandHandler(ISchoolContext context)
+        public GetDeleteDepartmentConfirmationCommandHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<DeleteDepartmentVM> Handle(GetDeleteDepartmentConfirmationCommand request, CancellationToken cancellationToken)
@@ -23,21 +27,15 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.DeleteConfirmati
                 throw new NotFoundException(nameof(Department), request.ID);
 
             var department = await _context.Departments
-                .Include(d => d.Administrator).AsNoTracking()
+                .Include(d => d.Administrator)
+                .AsNoTracking()
+                .ProjectTo<DeleteDepartmentVM>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(m => m.DepartmentID == request.ID, cancellationToken);
 
             if (department == null)
                 throw new NotFoundException(nameof(Department), request.ID);
 
-            return new DeleteDepartmentVM
-            {
-                DepartmentID = department.DepartmentID,
-                Name = department.Name,
-                Budget = department.Budget,
-                StartDate = department.StartDate,
-                RowVersion = department.RowVersion,
-                AdministratorName = department.Administrator.FullName
-            };
+            return department;
         }
     }
 }
