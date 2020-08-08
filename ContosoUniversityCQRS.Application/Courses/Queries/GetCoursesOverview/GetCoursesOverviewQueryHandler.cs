@@ -1,7 +1,8 @@
-﻿using ContosoUniversityCQRS.Application.Common.Interfaces;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,27 +11,23 @@ namespace ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview
     public class GetCoursesOverviewQueryHandler : IRequestHandler<GetCoursesOverviewQuery, CoursesOverviewVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetCoursesOverviewQueryHandler(ISchoolContext context)
+        public GetCoursesOverviewQueryHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<CoursesOverviewVM> Handle(GetCoursesOverviewQuery request, CancellationToken cancellationToken)
         {
-            var courses = _context.Courses
+            var courses = await _context.Courses
                 .Include(c => c.Department)
-                .AsNoTracking().Select(c => new CourseVM
-                {
-                    CourseID = c.CourseID,
-                    Title = c.Title,
-                    Credits = c.Credits,
-                    DepartmentName = c.Department.Name
-                });
+                .AsNoTracking()
+                .ProjectTo<CourseVM>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
 
-            var result = await courses.ToListAsync();
-
-            return new CoursesOverviewVM(result);
+            return new CoursesOverviewVM(courses);
         }
     }
 }

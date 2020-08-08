@@ -1,9 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using ContosoUniversityCQRS.Application.Common.Mappings;
+using ContosoUniversityCQRS.Domain.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview
 {
-    public class CourseVM
+    public class CourseVM : IMapFrom<Course>
     {
         [Display(Name = "Number")]
         public int CourseID { get; set; }
@@ -15,5 +18,11 @@ namespace ContosoUniversityCQRS.Application.Courses.Queries.GetCoursesOverview
         public int Credits { get; set; }
 
         public string DepartmentName { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Course, CourseVM>()
+                .ForMember(d => d.DepartmentName, opt => opt.MapFrom(s => s.Department.Name));
+        }
     }
 }
