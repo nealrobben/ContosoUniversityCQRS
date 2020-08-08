@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Interfaces;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -10,28 +12,23 @@ namespace ContosoUniversityCQRS.Application.Departments.Queries.GetDepartmentsOv
     public class GetDepartmentsOverviewQueryHandler : IRequestHandler<GetDepartmentsOverviewQuery, DepartmentsOverviewVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetDepartmentsOverviewQueryHandler(ISchoolContext context)
+        public GetDepartmentsOverviewQueryHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<DepartmentsOverviewVM> Handle(GetDepartmentsOverviewQuery request, CancellationToken cancellationToken)
         {
-            var departments = _context.Departments
+            var departments = await _context.Departments
                 .Include(d => d.Administrator)
-                .AsNoTracking().Select(c => new DepartmentVM
-                {
-                    DepartmentID = c.DepartmentID,
-                    Name = c.Name,
-                    Budget = c.Budget,
-                    StartDate = c.StartDate,
-                    AdministratorName = c.Administrator != null ? c.Administrator.FullName : string.Empty
-                });
+                .AsNoTracking()
+                .ProjectTo<DepartmentVM>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
 
-            var result = await departments.ToListAsync();
-
-            return new DepartmentsOverviewVM(result);
+            return new DepartmentsOverviewVM(departments);
         }
     }
 }
