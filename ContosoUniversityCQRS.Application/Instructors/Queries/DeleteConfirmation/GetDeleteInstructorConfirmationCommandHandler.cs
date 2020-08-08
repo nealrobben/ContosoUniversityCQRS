@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Exceptions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Exceptions;
 using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using MediatR;
@@ -11,10 +13,12 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.DeleteConfirmati
     public class GetDeleteInstructorConfirmationCommandHandler : IRequestHandler<GetDeleteInstructorConfirmationCommand, DeleteInstructorVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetDeleteInstructorConfirmationCommandHandler(ISchoolContext context)
+        public GetDeleteInstructorConfirmationCommandHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<DeleteInstructorVM> Handle(GetDeleteInstructorConfirmationCommand request, CancellationToken cancellationToken)
@@ -23,18 +27,14 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.DeleteConfirmati
                 throw new NotFoundException(nameof(Instructor), request.ID);
 
             var instructor = await _context.Instructors
-                .FirstOrDefaultAsync(m => m.ID == request.ID);
+                .AsNoTracking()
+                .ProjectTo<DeleteInstructorVM>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(m => m.InstructorID == request.ID, cancellationToken);
 
             if (instructor == null)
                 throw new NotFoundException(nameof(Instructor), request.ID);
 
-            return new DeleteInstructorVM
-            {
-                InstructorID = instructor.ID,
-                FirstName = instructor.FirstMidName,
-                LastName = instructor.LastName,
-                HireDate = instructor.HireDate
-            };
+            return instructor;
         }
     }
 }
