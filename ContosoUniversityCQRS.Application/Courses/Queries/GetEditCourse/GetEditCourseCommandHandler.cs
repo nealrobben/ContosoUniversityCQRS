@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Exceptions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Exceptions;
 using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using MediatR;
@@ -11,10 +13,12 @@ namespace ContosoUniversityCQRS.Application.Courses.Queries.GetEditCourse
     public class GetEditCourseCommandHandler : IRequestHandler<GetEditCourseCommand, EditCourseVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetEditCourseCommandHandler(ISchoolContext context)
+        public GetEditCourseCommandHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<EditCourseVM> Handle(GetEditCourseCommand request, CancellationToken cancellationToken)
@@ -24,18 +28,13 @@ namespace ContosoUniversityCQRS.Application.Courses.Queries.GetEditCourse
 
             var course = await _context.Courses
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.CourseID == request.ID);
+                .ProjectTo<EditCourseVM>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(m => m.CourseID == request.ID, cancellationToken);
 
             if (course == null)
                 throw new NotFoundException(nameof(Course), request.ID);
 
-            return new EditCourseVM
-            {
-                CourseID = course.CourseID,
-                Title = course.Title,
-                Credits = course.Credits,
-                DepartmentID = course.DepartmentID
-            };
+            return course;
         }
     }
 }
