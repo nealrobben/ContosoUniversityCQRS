@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ContosoUniversityCQRS.Application.CourseAssignment
+namespace ContosoUniversityCQRS.Application.CourseAssignment.Commands
 {
     public class UpdateCourseAssignmentsCommandHandler : IRequestHandler<UpdateCourseAssignmentsCommand>
     {

@@ -14,6 +14,7 @@ using ContosoUniversityCQRS.Application.Courses.Queries.GetCourseList;
 using ContosoUniversityCQRS.Application.CourseAssignment;
 using ContosoUniversityCQRS.Application.Instructors.Commands.UpdateInstructor;
 using ContosoUniversityCQRS.Domain.Entities;
+using ContosoUniversityCQRS.Application.CourseAssignment.Commands;
 
 namespace ContosoUniversityCQRS.WebUI.Controllers
 {

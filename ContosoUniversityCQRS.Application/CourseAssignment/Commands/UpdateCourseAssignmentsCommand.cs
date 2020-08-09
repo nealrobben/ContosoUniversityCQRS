@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace ContosoUniversityCQRS.Application.CourseAssignment
+namespace ContosoUniversityCQRS.Application.CourseAssignment.Commands
 {
     public class UpdateCourseAssignmentsCommand : IRequest
     {
