@@ -37,7 +37,7 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOv
                   .OrderBy(i => i.LastName)
                   .ToListAsync();
 
-            List<InstructorVM> instructorVMs = GetInstructors(instructors);
+            List<InstructorVM> instructorVMs = await GetInstructors(cancellationToken);
             List<CourseVM> courseVMs = GetCourses(request, instructors);
             List<EnrollmentVM> enrollments = await GetEnrollments(request, cancellationToken);
 
@@ -51,22 +51,21 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOv
             };
         }
 
-        private static List<InstructorVM> GetInstructors(List<Instructor> instructors)
+        private async Task<List<InstructorVM>> GetInstructors(CancellationToken cancellationToken)
         {
-            return instructors.Select(c => new InstructorVM
-            {
-                InstructorID = c.ID,
-                FirstName = c.FirstMidName,
-                LastName = c.LastName,
-                HireDate = c.HireDate,
-                OfficeLocation = c.OfficeAssignment?.Location,
-                CourseAssignments = c.CourseAssignments
-                    .Select(x => new CourseAssignmentVM 
-                        {
-                            CourseID = x.CourseID,
-                            CourseTitle = x.Course.Title
-                        }).ToList()
-            }).ToList();
+            return await _context.Instructors
+                  .Include(i => i.OfficeAssignment)
+                  .Include(i => i.CourseAssignments)
+                    .ThenInclude(i => i.Course)
+                        .ThenInclude(i => i.Enrollments)
+                            .ThenInclude(i => i.Student)
+                  .Include(i => i.CourseAssignments)
+                    .ThenInclude(i => i.Course)
+                        .ThenInclude(i => i.Department)
+                  .AsNoTracking()
+                  .OrderBy(i => i.LastName)
+                  .ProjectTo<InstructorVM>(_mapper.ConfigurationProvider)
+                  .ToListAsync(cancellationToken);
         }
 
         private static List<CourseVM> GetCourses(GetInstructorsOverviewQuery request, List<Instructor> instructors)
