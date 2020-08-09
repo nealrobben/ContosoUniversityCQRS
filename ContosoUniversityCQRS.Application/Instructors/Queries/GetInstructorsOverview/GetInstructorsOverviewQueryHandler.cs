@@ -1,4 +1,6 @@
-﻿using ContosoUniversityCQRS.Application.Common.Interfaces;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ContosoUniversityCQRS.Application.Common.Interfaces;
 using ContosoUniversityCQRS.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +14,12 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOv
     public class GetInstructorsOverviewQueryHandler : IRequestHandler<GetInstructorsOverviewQuery, InstructorsOverviewVM>
     {
         private readonly ISchoolContext _context;
+        private readonly IMapper _mapper;
 
-        public GetInstructorsOverviewQueryHandler(ISchoolContext context)
+        public GetInstructorsOverviewQueryHandler(ISchoolContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<InstructorsOverviewVM> Handle(GetInstructorsOverviewQuery request, CancellationToken cancellationToken)
@@ -35,7 +39,7 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOv
 
             List<InstructorVM> instructorVMs = GetInstructors(instructors);
             List<CourseVM> courseVMs = GetCourses(request, instructors);
-            List<EnrollmentVM> enrollments = await GetEnrollments(request);
+            List<EnrollmentVM> enrollments = await GetEnrollments(request, cancellationToken);
 
             return new InstructorsOverviewVM
             {
@@ -84,24 +88,19 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOv
             return courseVMs;
         }
 
-        private async Task<List<EnrollmentVM>> GetEnrollments(GetInstructorsOverviewQuery request)
+        private async Task<List<EnrollmentVM>> GetEnrollments(GetInstructorsOverviewQuery request, CancellationToken cancellationToken)
         {
-            List<EnrollmentVM> enrollments = null;
-
             if (request.SelectedCourseID != null)
             {
-                enrollments = await _context.Enrollments
+                return await _context.Enrollments
+                    .AsNoTracking()
                     .Include(x => x.Student)
                     .Where(x => x.CourseID == request.SelectedCourseID.Value)
-                    .Select(x => new EnrollmentVM
-                    {
-                        StudentName = x.Student.FullName,
-                        StudentGrade = x.Grade
-                    })
-                    .ToListAsync();
+                    .ProjectTo<EnrollmentVM>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
             }
 
-            return enrollments;
+            return null;
         }
     }
 }
