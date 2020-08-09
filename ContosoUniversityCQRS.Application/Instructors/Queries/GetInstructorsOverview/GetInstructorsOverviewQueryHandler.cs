@@ -24,21 +24,8 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOv
 
         public async Task<InstructorsOverviewVM> Handle(GetInstructorsOverviewQuery request, CancellationToken cancellationToken)
         {
-            var instructors = await _context.Instructors
-                  .Include(i => i.OfficeAssignment)
-                  .Include(i => i.CourseAssignments)
-                    .ThenInclude(i => i.Course)
-                        .ThenInclude(i => i.Enrollments)
-                            .ThenInclude(i => i.Student)
-                  .Include(i => i.CourseAssignments)
-                    .ThenInclude(i => i.Course)
-                        .ThenInclude(i => i.Department)
-                  .AsNoTracking()
-                  .OrderBy(i => i.LastName)
-                  .ToListAsync();
-
             List<InstructorVM> instructorVMs = await GetInstructors(cancellationToken);
-            List<CourseVM> courseVMs = GetCourses(request, instructors);
+            List<CourseVM> courseVMs = await GetCourses(request, cancellationToken);
             List<EnrollmentVM> enrollments = await GetEnrollments(request, cancellationToken);
 
             return new InstructorsOverviewVM
@@ -68,23 +55,18 @@ namespace ContosoUniversityCQRS.Application.Instructors.Queries.GetInstructorsOv
                   .ToListAsync(cancellationToken);
         }
 
-        private static List<CourseVM> GetCourses(GetInstructorsOverviewQuery request, List<Instructor> instructors)
+        private async Task<List<CourseVM>> GetCourses(GetInstructorsOverviewQuery request, CancellationToken cancellationToken)
         {
-            List<CourseVM> courseVMs = null;
-
             if (request.SelectedInstructorID != null)
             {
-                Instructor instructor = instructors.Where(
-                    i => i.ID == request.SelectedInstructorID.Value).Single();
-                courseVMs = instructor.CourseAssignments.Select(c => new CourseVM
-                {
-                    CourseID = c.CourseID,
-                    Title = c.Course.Title,
-                    DepartmentName = c.Course.Department.Name
-                }).ToList();
+                return await _context.CourseAssignments
+                    .Where(x => x.InstructorID == request.SelectedInstructorID.Value)
+                    .AsNoTracking()
+                    .ProjectTo<CourseVM>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
             }
 
-            return courseVMs;
+            return null;
         }
 
         private async Task<List<EnrollmentVM>> GetEnrollments(GetInstructorsOverviewQuery request, CancellationToken cancellationToken)
